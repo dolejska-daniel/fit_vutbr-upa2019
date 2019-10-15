@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Application" type="Application" factoryName="Application">
+    <envs>
+      <env name="DB_URI" value="/" />
+      <env name="DB_USER" value="/" />
+      <env name="DB_PASS" value="/" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="Application" />
+    <module name="fit_vutbr-upa2019" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

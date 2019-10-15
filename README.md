@@ -1,1 +1,2 @@
-# fit_vutbr-upa2019
+# _TBD_
+> UPA - Ukládání a příprava dat
