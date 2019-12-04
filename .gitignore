@@ -33,3 +33,5 @@ config/*
 
 # required libraries
 !libs/ojdbc/ojdbc7.jar
+!libs/ordim.jar
+!libs/runtime12.jar

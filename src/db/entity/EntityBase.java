@@ -10,8 +10,14 @@ import db.Connection;
  */
 public abstract class EntityBase
 {
-    /** Database connection instance. */
+    /**
+     * Database connection instance.
+     */
     private Connection connection;
+
+    public EntityBase()
+    {
+    }
 
     /**
      * Database connection setter.
@@ -20,7 +26,7 @@ public abstract class EntityBase
      */
     private void setConnection(Connection c)
     {
-        assert(c != null);
+        assert (c != null);
         this.connection = c;
     }
 
