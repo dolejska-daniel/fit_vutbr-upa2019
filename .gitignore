@@ -30,3 +30,6 @@ hs_err_pid*
 # configuration files
 config/*
 !config/*dist*
+
+# required libraries
+!libs/ojdbc/ojdbc7.jar
