@@ -1,6 +1,8 @@
 package upa.db.entity;
 
-import upa.db.Connection;
+import upa.Application;
+
+import java.sql.Connection;
 
 /**
  * Database entity base class.
@@ -10,49 +12,29 @@ import upa.db.Connection;
  */
 public abstract class EntityBase
 {
-    /**
-     * Database connection instance.
-     */
-    private Connection connection;
+    //=====================================================================dd==
+    // CONSTRUCTORS
+    //=====================================================================dd==
 
     public EntityBase()
     {
     }
 
-    /**
-     * Database connection setter.
-     *
-     * @param c Database connection.
-     */
-    private void setConnection(Connection c)
-    {
-        assert (c != null);
-        this.connection = c;
-    }
+
+    //=====================================================================dd==
+    // HELPER METHODS
+    //=====================================================================dd==
 
     /**
      * Database connection getter.
      *
      * @return Database connection.
      */
-    public Connection getConnection()
+    public Connection GetConnection()
     {
-        return connection;
+        return Application.connection;
     }
 
-    //=====================================================================dd==
-    // CONSTRUCTORS
-    //=====================================================================dd==
-
-    /**
-     * Class constructor.
-     *
-     * @param c Database connection.
-     */
-    public EntityBase(Connection c)
-    {
-        this.setConnection(c);
-    }
 
     //=====================================================================dd==
     // ENTITY DATABASE METHODS

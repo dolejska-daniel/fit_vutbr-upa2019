@@ -1,6 +1,5 @@
 package upa.db.entity;
 
-import upa.Application;
 import upa.db.exception.NotFoundException;
 import upa.db.exception.QueryException;
 
@@ -30,6 +29,10 @@ public class Entry extends EntityBase
      */
     public String description;
 
+    //=====================================================================dd==
+    // CONSTRUCTORS
+    //=====================================================================dd==
+
     public Entry()
     {
     }
@@ -39,11 +42,15 @@ public class Entry extends EntityBase
         this.id = id;
     }
 
+    //=====================================================================dd==
+    // ENTITY DATABASE METHODS
+    //=====================================================================dd==
+
     @Override
     public void Create() throws QueryException
     {
         final String query = "INSERT INTO entries (id, name, description) VALUES (?, ?, ?);";
-        try (PreparedStatement insertQuery = Application.connection.prepareStatement(query))
+        try (PreparedStatement insertQuery = this.GetConnection().prepareStatement(query))
         {
             insertQuery.setInt(1, this.id);
             insertQuery.setString(2, this.name);
@@ -61,7 +68,7 @@ public class Entry extends EntityBase
     public void Update() throws NotFoundException, QueryException
     {
         final String query = "UPDATE entries SET id=?, name=?, description=? WHERE id=?;";
-        try (PreparedStatement updateQuery = Application.connection.prepareStatement(query))
+        try (PreparedStatement updateQuery = this.GetConnection().prepareStatement(query))
         {
             updateQuery.setInt(1, this.id);
             updateQuery.setString(2, this.name);
@@ -81,7 +88,7 @@ public class Entry extends EntityBase
     public void Delete() throws NotFoundException, QueryException
     {
         final String query = "DELETE FROM entries WHERE id=?;";
-        try (PreparedStatement deleteQuery = Application.connection.prepareStatement(query))
+        try (PreparedStatement deleteQuery = this.GetConnection().prepareStatement(query))
         {
             deleteQuery.setInt(1, this.id);
 
