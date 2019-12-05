@@ -1,29 +1,31 @@
-package db.entity;
+package upa.db.entity;
 
 /**
- * Building entry.
+ * Geometry entry for building entry.
  *
  * @author Daniel Dolejška
  * @since 2019-12-04
  */
-public class Entry extends EntityBase
+public class Geometry extends EntityBase
 {
     /**
-     * Unique building ID.
+     * Unique geometry ID.
      */
     public int id;
 
     /**
-     * Building's name.
+     * Related building entry ID.
      */
-    public String name;
+    public int entry_id;
 
     /**
-     * Building's description.
+     * Geometry type.
      */
-    public String description;
+    public String type;
 
-    public Entry()
+    // TODO: Add field for geometry data
+
+    public Geometry()
     {
     }
 

@@ -5,7 +5,7 @@
       <env name="DB_USER" value="/" />
       <env name="DB_PASS" value="/" />
     </envs>
-    <option name="MAIN_CLASS_NAME" value="Application" />
+    <option name="MAIN_CLASS_NAME" value="upa.Application" />
     <module name="fit_vutbr-upa2019" />
     <method v="2">
       <option name="Make" enabled="true" />

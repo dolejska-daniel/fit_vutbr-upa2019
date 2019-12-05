@@ -1,4 +1,4 @@
-package utils;
+package upa.utils;
 
 import oracle.spatial.geometry.JGeometry;
 

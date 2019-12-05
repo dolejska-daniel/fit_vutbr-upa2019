@@ -1,4 +1,4 @@
-package db;
+package upa.db;
 
 import oracle.jdbc.pool.OracleDataSource;
 

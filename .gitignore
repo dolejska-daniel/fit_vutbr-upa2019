@@ -32,6 +32,10 @@ config/*
 !config/*dist*
 
 # required libraries
-!libs/ojdbc/ojdbc7.jar
-!libs/ordim.jar
-!libs/runtime12.jar
+libs/**/*
+!libs/oracle/ojdbc7.jar
+!libs/multimedia/ordim.jar
+!libs/multimedia/runtime12.jar
+!libs/spatial/sdoapi.jar
+!libs/spatial/sdotype.jar
+!libs/spatial/sdoutl.jar

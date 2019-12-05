@@ -1,4 +1,4 @@
-package db.entity;
+package upa.db.entity;
 
 import oracle.ord.im.OrdImage;
 

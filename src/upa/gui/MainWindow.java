@@ -1,4 +1,4 @@
-package gui;
+package upa.gui;
 
 import javax.swing.*;
 import java.awt.*;

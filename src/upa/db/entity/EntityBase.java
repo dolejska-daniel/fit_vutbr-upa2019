@@ -1,6 +1,6 @@
-package db.entity;
+package upa.db.entity;
 
-import db.Connection;
+import upa.db.Connection;
 
 /**
  * Database entity base class.
