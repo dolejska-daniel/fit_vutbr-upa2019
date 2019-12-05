@@ -5,6 +5,8 @@ import upa.db.exception.QueryException;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Building entry.
@@ -37,7 +39,7 @@ public class Entry extends EntityBase
     {
     }
 
-    public Entry(int id)
+    public Entry(final int id)
     {
         this.id = id;
     }
@@ -45,6 +47,18 @@ public class Entry extends EntityBase
     //=====================================================================dd==
     // ENTITY DATABASE METHODS
     //=====================================================================dd==
+
+    public static Entry Get(final int id)
+    {
+        // TODO: Implement Get functionality
+        return null;
+    }
+
+    public static List<Entry> GetAll()
+    {
+        // TODO: Implement GetAll functionality
+        return new ArrayList<>();
+    }
 
     @Override
     public void Create() throws QueryException
