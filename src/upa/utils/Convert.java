@@ -1,6 +1,7 @@
 package upa.utils;
 
 import oracle.spatial.geometry.JGeometry;
+import upa.utils.exception.ConversionException;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -88,26 +89,3 @@ public class Convert
     }
 }
 
-/**
- * Class representing exception during data conversion.
- *
- * @author Daniel Dolejška
- * @since 2019-12-05
- */
-class ConversionException extends Exception
-{
-    public ConversionException()
-    {
-        super();
-    }
-
-    public ConversionException(String message)
-    {
-        super(message);
-    }
-
-    public ConversionException(String message, Throwable cause)
-    {
-        super(message, cause);
-    }
-}

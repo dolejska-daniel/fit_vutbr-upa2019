@@ -102,6 +102,23 @@ public class Image extends EntityBase
         return image;
     }
 
+    /**
+     * Creates Image instance for each row from database selection query.
+     *
+     * @param resultSet Successfully executed database selection query.
+     * @param arrayList Output list of image instances.
+     * @throws SQLException Query with invalid selection provided.
+     */
+    private static void FillArrayFromResultSet(ResultSet resultSet, ArrayList<Image> arrayList) throws SQLException
+    {
+        do
+        {
+            Image image = Image.CreateFromResultSet(resultSet);
+            arrayList.add(image);
+        }
+        while (resultSet.next());
+    }
+
 
     //=====================================================================dd==
     // ENTITY DATABASE METHODS
@@ -154,12 +171,7 @@ public class Image extends EntityBase
             if (resultSet == null || !resultSet.next())
                 return array;
 
-            do
-            {
-                Image image = Image.CreateFromResultSet(resultSet);
-                array.add(image);
-            }
-            while (resultSet.next());
+            Image.FillArrayFromResultSet(resultSet, array);
         }
         catch (SQLException e)
         {

@@ -68,6 +68,23 @@ public class Entry extends EntityBase
         return entry;
     }
 
+    /**
+     * Creates Entry instance for each row from database selection query.
+     *
+     * @param resultSet Successfully executed database selection query.
+     * @param arrayList Output list of image instances.
+     * @throws SQLException Query with invalid selection provided.
+     */
+    private static void FillArrayFromResultSet(ResultSet resultSet, ArrayList<Entry> arrayList) throws SQLException
+    {
+        do
+        {
+            Entry entry = Entry.CreateFromResultSet(resultSet);
+            arrayList.add(entry);
+        }
+        while (resultSet.next());
+    }
+
 
     //=====================================================================dd==
     // ENTITY DATABASE METHODS
@@ -120,12 +137,7 @@ public class Entry extends EntityBase
             if (resultSet == null || !resultSet.next())
                 return array;
 
-            do
-            {
-                Entry entry = Entry.CreateFromResultSet(resultSet);
-                array.add(entry);
-            }
-            while (resultSet.next());
+            Entry.FillArrayFromResultSet(resultSet, array);
         }
         catch (SQLException e)
         {
