@@ -30,7 +30,7 @@ public abstract class EntityBase
      *
      * @return Database connection.
      */
-    public Connection GetConnection()
+    public static Connection GetConnection()
     {
         return Application.connection;
     }
