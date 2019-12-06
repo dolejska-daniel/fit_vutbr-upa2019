@@ -5,6 +5,7 @@ import oracle.jdbc.pool.OracleDataSource;
 import java.io.FileInputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -59,5 +60,17 @@ public class Connection
         }
 
         return null;
+    }
+
+    public static void CloseConnection(java.sql.Connection connection)
+    {
+        try
+        {
+            connection.close();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,5 @@
 package upa;
 
-import upa.db.Connection;
 import upa.gui.WindowManager;
 
 /**
@@ -16,8 +15,6 @@ public final class Application
      */
     public static void main(String[] args)
     {
-        Application.connection = Connection.CreateConnection();
-
         WindowManager.Setup();
         WindowManager.Run();
     }

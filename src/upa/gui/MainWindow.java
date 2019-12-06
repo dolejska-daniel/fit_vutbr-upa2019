@@ -1,46 +1,59 @@
 package upa.gui;
 
-import javax.swing.*;
-import java.awt.*;
+import upa.Application;
+import upa.db.Connection;
 
-/**
- * Main GUI window class.
- *
- * @author Daniel Dolejška
- * @since 2019-12-04
- */
-public class MainWindow extends JFrame
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+public class MainWindow extends JDialog
 {
-    /**
-     * Create and configure instance of program's main window.
-     */
+    private JPanel contentPane;
+    private JPanel Controls;
+    private JButton button1;
+    private JTable entriesTable;
+    private JTabbedPane tabbedPane1;
+    private JList imageList;
+    private JScrollPane imageDisplay;
+    private JList geometryList;
+    private JScrollPane geometryDisplay;
+
     public MainWindow()
     {
-        super("[UPA] Realitní kancl č.69", WindowManager.graphicsCfg);
+        Application.connection = Connection.CreateConnection();
 
-        this.setSize(800, 600);
-        this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setContentPane(contentPane);
+        setSize(800, 600);
 
-        this.SetupLayout();
+//        getRootPane().setDefaultButton(buttonOK);
+//        buttonOK.addActionListener(e -> onOK());
+//        buttonCancel.addActionListener(e -> onCancel());
+
+        // call onCancel() when cross is clicked
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                onCancel();
+            }
+        });
+
+        // call onCancel() on ESCAPE
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    private void SetupLayout()
+    private void onOK()
     {
-        this.setLayout(new BorderLayout());
+        dispose();
+    }
 
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+    private void onCancel()
+    {
+        Connection.CloseConnection(Application.connection);
 
-        this.add(leftPanel, BorderLayout.WEST);
-        leftPanel.add(new JButton("Hello worlds1."));
-        leftPanel.add(new JButton("Hello worlds2."));
-        leftPanel.add(new JButton("Hello worlds3."));
-        leftPanel.add(new JButton("Hello worlds4."));
-        leftPanel.add(new JButton("Hello worlds5."));
-        leftPanel.add(new JButton("Hello worlds6."));
-
-        JPanel rightPanel = new JPanel();
-        this.add(rightPanel, BorderLayout.CENTER);
+        dispose();
     }
 }
