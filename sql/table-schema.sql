@@ -29,9 +29,9 @@ CREATE TABLE images
     image_tx    ORDSYS.SI_Texture,
 
     -- Foreign key constraints
-    CONSTRAINT FK_entry
+    CONSTRAINT FK_images_entry
         FOREIGN KEY (entry_id)
-            REFERENCES entries (entry_id)
+            REFERENCES entries (id)
 );
 
 CREATE TABLE geometry
@@ -42,7 +42,7 @@ CREATE TABLE geometry
     data     SDO_GEOMETRY,
 
     -- Foreign key constraints
-    CONSTRAINT FK_entry
+    CONSTRAINT FK_geometry_entry
         FOREIGN KEY (entry_id)
-            REFERENCES entries (entry_id)
+            REFERENCES entries (id)
 );
