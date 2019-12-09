@@ -25,16 +25,16 @@ public class CreateImage extends JDialog
     private File imageFile;
     private JLabel errorLabel;
 
-    public CreateImage()
+    public CreateImage(final int entry_id)
     {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
+        entryField.setText(String.valueOf(entry_id));
         buttonSelectFile.addActionListener(e -> SelectImageFile());
 
         buttonOK.addActionListener(e -> onOK());
-
         buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
@@ -87,8 +87,8 @@ public class CreateImage extends JDialog
         dialog.showDialog(this, "Select");
 
         File file = dialog.getSelectedFile();
-        imagePathField.setText(file.toPath().toAbsolutePath().toString());
-        imageFile = file;
+        this.imagePathField.setText(file.toPath().toAbsolutePath().toString());
+        this.imageFile = file;
     }
 
     private void RegisterListeners()
@@ -107,7 +107,9 @@ public class CreateImage extends JDialog
         try
         {
             Image i = new Image();
-            i.entry_id = 1;
+
+            Document entry = entryField.getDocument();
+            i.entry_id = Integer.parseInt(entry.getText(0, entry.getLength()));
 
             Document title = titleField.getDocument();
             i.title = title.getText(0, title.getLength());
