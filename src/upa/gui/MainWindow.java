@@ -13,7 +13,7 @@ public class MainWindow extends JDialog
 {
     private JPanel contentPane;
     private JPanel Controls;
-    private JButton button1;
+    private JButton newEntryButton;
     private JTable entriesTable;
     private JTabbedPane tabbedPane1;
     private JList imageList;
@@ -25,11 +25,14 @@ public class MainWindow extends JDialog
     {
         Application.connection = Connection.CreateConnection();
 
+        setLocationRelativeTo(null);
         setContentPane(contentPane);
         setSize(800, 600);
 
         entriesTable.setModel(new EntryTableModel());
         entriesTable.doLayout();
+
+        newEntryButton.addActionListener(e -> WindowManager.ShowNewEntryDialog());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -43,6 +46,11 @@ public class MainWindow extends JDialog
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+    public EntryTableModel GetEntryTableModel()
+    {
+        return (EntryTableModel) entriesTable.getModel();
     }
 
     private void onOK()

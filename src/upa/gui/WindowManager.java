@@ -35,4 +35,15 @@ public class WindowManager
     {
         mainWindow.setVisible(true);
     }
+
+    public static void ShowNewEntryDialog()
+    {
+        CreateEntry dialog = new CreateEntry();
+        dialog.pack();
+        dialog.setLocationRelativeTo(mainWindow);
+        dialog.setVisible(true);
+
+        if (dialog.createdEntry != null)
+            mainWindow.GetEntryTableModel().Insert(dialog.createdEntry);
+    }
 }

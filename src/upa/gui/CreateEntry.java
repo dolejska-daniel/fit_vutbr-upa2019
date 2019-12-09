@@ -18,6 +18,8 @@ public class CreateEntry extends JDialog
     private JTextArea descriptionField;
     private JLabel errorLabel;
 
+    public Entry createdEntry;
+
     public CreateEntry()
     {
         setContentPane(contentPane);
@@ -66,6 +68,7 @@ public class CreateEntry extends JDialog
             e.description = description.getText(0, description.getLength());
 
             e.Create();
+            createdEntry = e;
             System.out.println("Created new Entry: ID=" + e.id);
         }
         catch (Exception e)
