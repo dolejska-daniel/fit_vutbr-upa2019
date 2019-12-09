@@ -2,6 +2,7 @@ package upa.gui;
 
 import upa.Application;
 import upa.db.Connection;
+import upa.gui.model.EntryTableModel;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -27,9 +28,8 @@ public class MainWindow extends JDialog
         setContentPane(contentPane);
         setSize(800, 600);
 
-//        getRootPane().setDefaultButton(buttonOK);
-//        buttonOK.addActionListener(e -> onOK());
-//        buttonCancel.addActionListener(e -> onCancel());
+        entriesTable.setModel(new EntryTableModel());
+        entriesTable.doLayout();
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
