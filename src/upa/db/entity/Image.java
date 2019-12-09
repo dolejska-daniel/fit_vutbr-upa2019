@@ -6,7 +6,9 @@ import upa.db.exception.NotFoundException;
 import upa.db.exception.QueryException;
 import upa.utils.Query;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,15 +73,28 @@ public class Image extends EntityBase
      * @param filepath Path to image file.
      * @throws GeneralDatabaseException Load failed.
      */
-    public void LoadImage(final Path filepath) throws GeneralDatabaseException
+    public void LoadImage(final Path filepath) throws QueryException, GeneralDatabaseException
     {
+        if (this.id == 0)
+            throw new GeneralDatabaseException("Cannot load image until record is created in database.");
+
         try
         {
+            Connection connection = GetConnection();
+            connection.setAutoCommit(false);
+
+            Image data = Get(this.id, true);
+            this.image = data.image;
             this.image.loadDataFromFile(filepath.toString());
+            this.image.setProperties();
+
+            Update();
+
+            connection.setAutoCommit(true);
         }
-        catch (Exception e)
+        catch (SQLException | IOException e)
         {
-            throw new GeneralDatabaseException(String.format("Failed to load image from '%s'.", filepath), e);
+            throw new QueryException(String.format("Failed to load image from '%s'.", filepath), e);
         }
     }
 
@@ -132,8 +147,22 @@ public class Image extends EntityBase
      */
     public static Image Get(final int id) throws QueryException
     {
+        return Get(id, false);
+    }
+
+    /**
+     * Get image row with provided ID from database.
+     *
+     * @return Image with provided ID.
+     * @throws QueryException Query execution failed.
+     */
+    public static Image Get(final int id, final boolean forUpdate) throws QueryException
+    {
         // define SQL query
-        final String query = "SELECT * FROM images WHERE id=?";
+        String query = "SELECT * FROM images WHERE id=?";
+        if (forUpdate)
+            query += " FOR UPDATE";
+
         try (PreparedStatement selectQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
@@ -207,11 +236,6 @@ public class Image extends EntityBase
 
             // get returned row identifier
             this.id = Query.GetReturnId(insertQuery);
-
-            // image needs to be uploaded by update
-            // if it is set, then execute update too
-            if (this.image != null)
-                this.Update();
         }
         catch (SQLException e)
         {

@@ -161,12 +161,11 @@ public class Entry extends EntityBase
         try (PreparedStatement insertQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
-            insertQuery.setInt(1, this.id);
-            insertQuery.setString(2, this.name);
-            insertQuery.setString(3, this.description);
+            insertQuery.setString(1, this.name);
+            insertQuery.setString(2, this.description);
 
             // register return parameter
-            Query.RegisterReturnId(insertQuery, 4);
+            Query.RegisterReturnId(insertQuery, 3);
             // execute insertion
             insertQuery.executeUpdate();
             // TODO: Check whether insertion was successful?
