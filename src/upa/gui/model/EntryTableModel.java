@@ -136,4 +136,17 @@ public class EntryTableModel implements TableModel
         TableModelEvent event = new TableModelEvent(this, entries.size() - 1, entries.size() - 1, 0, TableModelEvent.INSERT);
         listeners.forEach(listener -> listener.tableChanged(event));
     }
+
+    public void Delete(int rowIndex)
+    {
+        if (rowIndex < 0)
+            return;
+
+        Entry e = entries.get(rowIndex);
+        e.Delete();
+        entries.remove(rowIndex);
+
+        TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, 0, TableModelEvent.DELETE);
+        listeners.forEach(listener -> listener.tableChanged(event));
+    }
 }
