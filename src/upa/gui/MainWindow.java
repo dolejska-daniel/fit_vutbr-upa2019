@@ -20,14 +20,19 @@ public class MainWindow extends JDialog
     private JPanel Controls;
     private JButton newEntryButton;
     private JTable entriesTable;
-    private JTabbedPane tabbedPane1;
+    private JTabbedPane tabbedPane;
     private JScrollPane imageDisplayPane;
-    private JList geometryList;
-    private JScrollPane geometryDisplay;
+    private JScrollPane geometryDisplayPane;
     private JButton removeEntryButton;
     private JTable imagesTable;
     private JButton newImageButton;
     private JButton removeImageButton;
+    private JTable geometryTable;
+    private JButton button1;
+    private JButton button2;
+    private JButton button3;
+    private JButton button4;
+    private JButton button5;
 
     private JPanel imageDisplayWrapper;
     private JPanel imageDisplay;
@@ -50,7 +55,7 @@ public class MainWindow extends JDialog
 
         setLocationRelativeTo(null);
         setContentPane(contentPane);
-        setSize(800, 600);
+        setSize(1200, 600);
 
         //-----------------------------------------------------dd--
         //  Entries table setup
@@ -64,7 +69,10 @@ public class MainWindow extends JDialog
 
             final DefaultListSelectionModel target = (DefaultListSelectionModel) e.getSource();
             // save current selection
-            SaveEntrySelection(target.getAnchorSelectionIndex());
+            if (target.isSelectionEmpty())
+                ClearEntrySelection();
+            else
+                SaveEntrySelection(target.getAnchorSelectionIndex());
         });
         entriesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -75,7 +83,7 @@ public class MainWindow extends JDialog
         newEntryButton.addActionListener(e -> WindowManager.ShowNewEntryDialog());
         removeEntryButton.addActionListener(e -> {
             GetEntryTableModel().Delete(selectedEntryIndex);
-            ClearEntrySelection();
+            entriesTable.getSelectionModel().clearSelection();
         });
 
         //-----------------------------------------------------dd--
@@ -90,7 +98,10 @@ public class MainWindow extends JDialog
 
             final DefaultListSelectionModel target = (DefaultListSelectionModel) e.getSource();
             // save current selection
-            SaveImageSelection(target.getAnchorSelectionIndex());
+            if (target.isSelectionEmpty())
+                ClearImageSelection();
+            else
+                SaveImageSelection(target.getAnchorSelectionIndex());
         });
         imagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -101,7 +112,7 @@ public class MainWindow extends JDialog
         newImageButton.addActionListener(e -> WindowManager.ShowNewImageDialog(selectedEntry.id));
         removeImageButton.addActionListener(e -> {
             GetImageTableModel().Delete(selectedEntryIndex);
-            ClearImageSelection();
+            imagesTable.getSelectionModel().clearSelection();
         });
 
         //-----------------------------------------------------dd--
@@ -152,28 +163,27 @@ public class MainWindow extends JDialog
         selectedEntryIndex = index;
         selectedEntry = GetEntryTableModel().Get(index);
 
-        // enable relevant buttons
+        // enable relevant objects
         removeEntryButton.setEnabled(true);
         newImageButton.setEnabled(true);
+        tabbedPane.setEnabled(true);
 
         // reload image table
-        ClearImageSelection();
         GetImageTableModel().SetEntryId(selectedEntry.id);
         // TODO: Reload geometry table
     }
 
     private void ClearEntrySelection()
     {
-        entriesTable.getSelectionModel().clearSelection();
         selectedEntryIndex = -1;
         selectedEntry = null;
 
-        // disable relevant buttons
+        // disable relevant objects
         removeEntryButton.setEnabled(false);
         newImageButton.setEnabled(false);
+        tabbedPane.setEnabled(false);
 
         // reload image table
-        ClearImageSelection();
         GetImageTableModel().SetEntryId(-1);
         // TODO: Reload geometry table
     }
@@ -189,6 +199,7 @@ public class MainWindow extends JDialog
 
     private void SaveImageSelection(final int index)
     {
+        System.out.println("NEW IMAGE SELECTION: " + index);
         selectedImageIndex = index;
         selectedImage = GetImageTableModel().Get(index);
 
@@ -201,7 +212,6 @@ public class MainWindow extends JDialog
             imageDisplay.setPreferredSize(new Dimension(imageToBeDisplayed.getWidth(), imageToBeDisplayed.getHeight()));
 
             setSize(getWidth() + 1, getHeight() + 1);
-            //setSize(getWidth() - 1, getHeight() - 1);
         }
         catch (Exception e)
         {
@@ -211,7 +221,7 @@ public class MainWindow extends JDialog
 
     private void ClearImageSelection()
     {
-        imagesTable.getSelectionModel().clearSelection();
+        System.out.println("CLEAR IMAGE SELECTION: ");
         selectedImageIndex = -1;
         selectedImage = null;
 
@@ -219,6 +229,7 @@ public class MainWindow extends JDialog
         removeImageButton.setEnabled(false);
         imageToBeDisplayed = null;
         imageDisplay.setPreferredSize(new Dimension(1, 1));
+
         setSize(getWidth() - 1, getHeight() - 1);
     }
 
