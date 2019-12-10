@@ -1,26 +1,28 @@
 package upa.gui.model;
 
-import upa.db.entity.Entry;
+import upa.db.entity.Image;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Table model for Entry database entity.
+ * Table model for Image database entity.
  *
  * @author Daniel Dolejška
  * @since 2019-12-09
  */
-public class EntryTableModel extends BaseTableModel
+public class ImageTableModel extends BaseTableModel
 {
-    List<Entry> entries;
+    List<Image> images;
 
     List<String> columns = new ArrayList<>()
     {
         {
             add("ID");
-            add("Name");
+            add("Title");
             add("Description");
+//            add("Icon");
         }
     };
 
@@ -29,9 +31,12 @@ public class EntryTableModel extends BaseTableModel
     // CONSTRUCTORS
     //=====================================================================dd==
 
-    public EntryTableModel()
+    /**
+     * Creates and initializes Image table model.
+     */
+    public ImageTableModel()
     {
-        entries = Entry.GetAll();
+        images = new ArrayList<>();
     }
 
 
@@ -39,15 +44,39 @@ public class EntryTableModel extends BaseTableModel
     // CUSTOM HELPER METHODS
     //=====================================================================dd==
 
-    public Entry Get(final int rowIndex)
+    public void SetEntryId(final int entry_id)
     {
-        return entries.get(rowIndex);
+        int imagesCount = getRowCount();
+        while (imagesCount-- != 0)
+        {
+            Remove(0);
+        }
+
+        if (entry_id == -1)
+            return;
+
+        images = Image.GetAll(entry_id);
+        NotifyTableReload(0, images.size() - 1);
     }
 
-    public void Insert(Entry e)
+    public Image Get(final int rowIndex)
     {
-        entries.add(e);
-        NotifyTableInsert(entries.size() - 1);
+        return images.get(rowIndex);
+    }
+
+    public void Insert(Image i)
+    {
+        images.add(i);
+        NotifyTableInsert(images.size() - 1);
+    }
+
+    public void Remove(int rowIndex)
+    {
+        if (rowIndex < 0)
+            return;
+
+        images.remove(rowIndex);
+        NotifyTableDelete(rowIndex);
     }
 
     public void Delete(int rowIndex)
@@ -55,11 +84,9 @@ public class EntryTableModel extends BaseTableModel
         if (rowIndex < 0)
             return;
 
-        Entry e = entries.get(rowIndex);
-        e.Delete();
-
-        entries.remove(rowIndex);
-        NotifyTableDelete(rowIndex);
+        Image i = images.get(rowIndex);
+        i.Delete();
+        Remove(rowIndex);
     }
 
 
@@ -71,7 +98,7 @@ public class EntryTableModel extends BaseTableModel
     @Override
     public int getRowCount()
     {
-        return entries.size();
+        return images.size();
     }
 
     @Override
@@ -96,6 +123,8 @@ public class EntryTableModel extends BaseTableModel
             case 1:
             case 2:
                 return String.class;
+            case 4:
+                return ImageIcon.class;
 
             default:
                 return null;
@@ -105,21 +134,35 @@ public class EntryTableModel extends BaseTableModel
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex)
     {
-        return columnIndex > 0;
+        return columnIndex > 0 && columnIndex != 3;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex)
     {
-        Entry entry = entries.get(rowIndex);
+        Image image = images.get(rowIndex);
         switch (columnIndex)
         {
             case 0:
-                return entry.id;
+                return image.id;
             case 1:
-                return entry.name;
+                return image.title;
             case 2:
-                return entry.description;
+                return image.description;
+            case 3:
+                try
+                {
+                    String extension = image.image.getMimeType().split("/")[1];
+                    String filepath = "tmp/" + image.id + "." + extension;
+
+                    image.image.getDataInFile(filepath);
+                    return new ImageIcon(filepath);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    return new ImageIcon();
+                }
 
             default:
                 return null;
@@ -129,23 +172,26 @@ public class EntryTableModel extends BaseTableModel
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex)
     {
-        Entry entry = entries.get(rowIndex);
+        Image image = images.get(rowIndex);
         switch (columnIndex)
         {
             case 0:
-                entry.id = (Integer) aValue;
+                image.id = (Integer) aValue;
                 break;
             case 1:
                 assert aValue instanceof String;
-                entry.name = (String) aValue;
+                image.title = (String) aValue;
                 break;
             case 2:
                 assert aValue instanceof String;
-                entry.description = (String) aValue;
+                image.description = (String) aValue;
                 break;
+
+            default:
+                return;
         }
 
-        entry.Update();
+        image.Update();
         NotifyTableUpdate(rowIndex, columnIndex);
     }
     //</editor-fold>

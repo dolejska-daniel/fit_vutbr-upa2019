@@ -68,7 +68,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="c46dc" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="c46dc" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <tabbedpane title="Images"/>
@@ -76,22 +76,31 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="d19d7" class="javax.swing.JList" binding="imageList">
+                  <splitpane id="cdeb3">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                        <preferred-size width="150" height="50"/>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="200" height="200"/>
                       </grid>
                     </constraints>
                     <properties/>
-                  </component>
-                  <scrollpane id="7b07e" binding="imageDisplay">
-                    <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties/>
                     <border type="none"/>
-                    <children/>
-                  </scrollpane>
+                    <children>
+                      <scrollpane id="7b07e" binding="imageDisplay">
+                        <constraints>
+                          <splitpane position="right"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children/>
+                      </scrollpane>
+                      <component id="28d5" class="javax.swing.JTable" binding="imagesTable">
+                        <constraints>
+                          <splitpane position="left"/>
+                        </constraints>
+                        <properties/>
+                      </component>
+                    </children>
+                  </splitpane>
                 </children>
               </grid>
               <grid id="21382" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

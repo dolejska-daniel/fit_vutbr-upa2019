@@ -211,6 +211,38 @@ public class Image extends EntityBase
     }
 
     /**
+     * Loads all currently existing entries for given entry_id from database.
+     *
+     * @return List of all existing entries for given entry_id currently in database.
+     * @throws QueryException Query execution failed.
+     */
+    public static List<Image> GetAll(final int entry_id) throws QueryException
+    {
+        ArrayList<Image> array = new ArrayList<>();
+
+        // define SQL query
+        final String query = "SELECT * FROM images WHERE entry_id=?";
+        try (PreparedStatement selectQuery = GetConnection().prepareStatement(query))
+        {
+            // set query parameters
+            selectQuery.setInt(1, entry_id);
+
+            // execute query
+            ResultSet resultSet = selectQuery.executeQuery();
+            if (resultSet == null || !resultSet.next())
+                return array;
+
+            Image.FillArrayFromResultSet(resultSet, array);
+        }
+        catch (Exception e)
+        {
+            throw new QueryException("Failed to process Image 'GET ALL' query.", e);
+        }
+
+        return array;
+    }
+
+    /**
      * Inserts new row with this object's data into database.
      *
      * @throws QueryException Query execution failed.
