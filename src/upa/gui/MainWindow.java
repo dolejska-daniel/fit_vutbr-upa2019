@@ -66,6 +66,7 @@ public class MainWindow extends JDialog
             // save current selection
             SaveEntrySelection(target.getAnchorSelectionIndex());
         });
+        entriesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         //-----------------------------------------------------dd--
         //  Entries buttons setup
@@ -91,6 +92,7 @@ public class MainWindow extends JDialog
             // save current selection
             SaveImageSelection(target.getAnchorSelectionIndex());
         });
+        imagesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         //-----------------------------------------------------dd--
         //  Image buttons setup
@@ -215,6 +217,9 @@ public class MainWindow extends JDialog
 
         // disable remove button
         removeImageButton.setEnabled(false);
+        imageToBeDisplayed = null;
+        imageDisplay.setPreferredSize(new Dimension(1, 1));
+        setSize(getWidth() - 1, getHeight() - 1);
     }
 
 
