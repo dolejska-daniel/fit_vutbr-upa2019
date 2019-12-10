@@ -3,12 +3,16 @@ package upa.gui;
 import upa.Application;
 import upa.db.Connection;
 import upa.db.entity.Entry;
+import upa.db.entity.Image;
 import upa.gui.model.EntryTableModel;
 import upa.gui.model.ImageTableModel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 public class MainWindow extends JDialog
 {
@@ -17,14 +21,23 @@ public class MainWindow extends JDialog
     private JButton newEntryButton;
     private JTable entriesTable;
     private JTabbedPane tabbedPane1;
-    private JScrollPane imageDisplay;
+    private JScrollPane imageDisplayPane;
     private JList geometryList;
     private JScrollPane geometryDisplay;
     private JButton removeEntryButton;
     private JTable imagesTable;
+    private JButton newImageButton;
+    private JButton removeImageButton;
+
+    private JPanel imageDisplayWrapper;
+    private JPanel imageDisplay;
+    private BufferedImage imageToBeDisplayed;
 
     private int selectedEntryIndex = -1;
     private Entry selectedEntry = null;
+
+    private int selectedImageIndex = -1;
+    private Image selectedImage = null;
 
 
     //=====================================================================dd==
@@ -79,6 +92,34 @@ public class MainWindow extends JDialog
             SaveImageSelection(target.getAnchorSelectionIndex());
         });
 
+        //-----------------------------------------------------dd--
+        //  Image buttons setup
+        //-----------------------------------------------------dd--
+
+        newImageButton.addActionListener(e -> WindowManager.ShowNewImageDialog(selectedEntry.id));
+        removeImageButton.addActionListener(e -> {
+            GetImageTableModel().Delete(selectedEntryIndex);
+            ClearImageSelection();
+        });
+
+        //-----------------------------------------------------dd--
+        //  Image canvas setup
+        //-----------------------------------------------------dd--
+
+        imageDisplay = new JPanel()
+        {
+            @Override
+            protected void paintComponent(Graphics g)
+            {
+                super.paintComponent(g);
+                g.drawImage(imageToBeDisplayed, 0, 0, null);
+            }
+        };
+
+        imageDisplayPane.getHorizontalScrollBar().setUnitIncrement(16);
+        imageDisplayPane.getVerticalScrollBar().setUnitIncrement(16);
+        imageDisplayPane.setViewportView(imageDisplay);
+
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter()
@@ -109,21 +150,28 @@ public class MainWindow extends JDialog
         selectedEntryIndex = index;
         selectedEntry = GetEntryTableModel().Get(index);
 
-        // enable remove button
+        // enable relevant buttons
         removeEntryButton.setEnabled(true);
+        newImageButton.setEnabled(true);
+
         // reload image table
+        ClearImageSelection();
         GetImageTableModel().SetEntryId(selectedEntry.id);
         // TODO: Reload geometry table
     }
 
     private void ClearEntrySelection()
     {
+        entriesTable.getSelectionModel().clearSelection();
         selectedEntryIndex = -1;
         selectedEntry = null;
 
-        // disable remove button
+        // disable relevant buttons
         removeEntryButton.setEnabled(false);
+        newImageButton.setEnabled(false);
+
         // reload image table
+        ClearImageSelection();
         GetImageTableModel().SetEntryId(-1);
         // TODO: Reload geometry table
     }
@@ -139,20 +187,34 @@ public class MainWindow extends JDialog
 
     private void SaveImageSelection(final int index)
     {
-        selectedEntryIndex = index;
-        selectedEntry = GetEntryTableModel().Get(index);
+        selectedImageIndex = index;
+        selectedImage = GetImageTableModel().Get(index);
 
         // enable remove button
-        removeEntryButton.setEnabled(true);
+        removeImageButton.setEnabled(true);
+
+        try
+        {
+            imageToBeDisplayed = ImageIO.read(selectedImage.image.getDataInStream());
+            imageDisplay.setPreferredSize(new Dimension(imageToBeDisplayed.getWidth(), imageToBeDisplayed.getHeight()));
+
+            setSize(getWidth() + 1, getHeight() + 1);
+            //setSize(getWidth() - 1, getHeight() - 1);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void ClearImageSelection()
     {
-        selectedEntryIndex = -1;
-        selectedEntry = null;
+        imagesTable.getSelectionModel().clearSelection();
+        selectedImageIndex = -1;
+        selectedImage = null;
 
         // disable remove button
-        removeEntryButton.setEnabled(false);
+        removeImageButton.setEnabled(false);
     }
 
 

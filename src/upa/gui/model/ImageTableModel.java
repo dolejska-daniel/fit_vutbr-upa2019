@@ -22,7 +22,7 @@ public class ImageTableModel extends BaseTableModel
             add("ID");
             add("Title");
             add("Description");
-//            add("Icon");
+            // add("Icon");
         }
     };
 
@@ -123,7 +123,7 @@ public class ImageTableModel extends BaseTableModel
             case 1:
             case 2:
                 return String.class;
-            case 4:
+            case 3:
                 return ImageIcon.class;
 
             default:
@@ -152,11 +152,7 @@ public class ImageTableModel extends BaseTableModel
             case 3:
                 try
                 {
-                    String extension = image.image.getMimeType().split("/")[1];
-                    String filepath = "tmp/" + image.id + "." + extension;
-
-                    image.image.getDataInFile(filepath);
-                    return new ImageIcon(filepath);
+                    return new ImageIcon(image.image.getDataInByteArray(), image.title);
                 }
                 catch (Exception e)
                 {

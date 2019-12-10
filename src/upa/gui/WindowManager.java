@@ -46,4 +46,17 @@ public class WindowManager
         if (dialog.createdEntry != null)
             mainWindow.GetEntryTableModel().Insert(dialog.createdEntry);
     }
+
+    public static void ShowNewImageDialog(final int entry_id)
+    {
+        {
+            CreateImage dialog = new CreateImage(entry_id);
+            dialog.pack();
+            dialog.setLocationRelativeTo(mainWindow);
+            dialog.setVisible(true);
+
+            if (dialog.createdImage != null)
+                mainWindow.GetImageTableModel().Insert(dialog.createdImage);
+        }
+    }
 }

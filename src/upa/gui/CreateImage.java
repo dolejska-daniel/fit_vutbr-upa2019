@@ -25,6 +25,8 @@ public class CreateImage extends JDialog
     private File imageFile;
     private JLabel errorLabel;
 
+    public Image createdImage;
+
     public CreateImage(final int entry_id)
     {
         setContentPane(contentPane);
@@ -120,6 +122,7 @@ public class CreateImage extends JDialog
             i.Create();
             i.LoadImage(imageFile.toPath());
 
+            createdImage = i;
             System.out.println("Created new Image: EntryID=" + i.entry_id + ", ID=" + i.id);
         }
         catch (Exception e)
