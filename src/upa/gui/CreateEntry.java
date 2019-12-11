@@ -20,15 +20,20 @@ public class CreateEntry extends JDialog
 
     public Entry createdEntry;
 
+
+    //=====================================================================dd==
+    // CONSTRUCTORS
+    //=====================================================================dd==
+
     public CreateEntry()
     {
+        //-----------------------------------------------------dd--
+        //  Window setup
+        //-----------------------------------------------------dd--
+
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-
-        buttonOK.addActionListener(e -> onOK());
-
-        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -44,6 +49,14 @@ public class CreateEntry extends JDialog
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         RegisterListeners();
+
+
+        //-----------------------------------------------------dd--
+        //  Listeners setup
+        //-----------------------------------------------------dd--
+
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> onCancel());
     }
 
     private void RegisterListeners()
@@ -54,6 +67,11 @@ public class CreateEntry extends JDialog
         nameField.getDocument().addDocumentListener(new PackDialogOnDocumentChange(this));
         descriptionField.getDocument().addDocumentListener(new PackDialogOnDocumentChange(this));
     }
+
+
+    //=====================================================================dd==
+    // OTHER ACTION METHODS
+    //=====================================================================dd==
 
     private void onOK()
     {

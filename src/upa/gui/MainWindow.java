@@ -30,9 +30,11 @@ public class MainWindow extends JDialog
     private JTable geometryTable;
     private JButton button1;
     private JButton button2;
-    private JButton button3;
-    private JButton button4;
-    private JButton button5;
+    private JButton calculateXXXaButton;
+    private JButton calculateXXXbButton;
+    private JButton calculateXXXcButton;
+    private JButton editImageButton;
+    private JButton findSimilarButton;
 
     private JPanel imageDisplayWrapper;
     private JPanel imageDisplay;
@@ -56,6 +58,16 @@ public class MainWindow extends JDialog
         setLocationRelativeTo(null);
         setContentPane(contentPane);
         setSize(1200, 600);
+
+        // call onCancel() when cross is clicked
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                onCancel();
+            }
+        });
 
         //-----------------------------------------------------dd--
         //  Entries table setup
@@ -114,6 +126,8 @@ public class MainWindow extends JDialog
             GetImageTableModel().Delete(selectedEntryIndex);
             imagesTable.getSelectionModel().clearSelection();
         });
+        editImageButton.addActionListener(e -> WindowManager.ShowEditImageDialog(selectedImage));
+        // findSimilarButton.addActionListener(e -> WindowManager.ShowFindSimilarImagesDialog(selectedImage));
 
         //-----------------------------------------------------dd--
         //  Image canvas setup
@@ -132,16 +146,6 @@ public class MainWindow extends JDialog
         imageDisplayPane.getHorizontalScrollBar().setUnitIncrement(16);
         imageDisplayPane.getVerticalScrollBar().setUnitIncrement(16);
         imageDisplayPane.setViewportView(imageDisplay);
-
-        // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter()
-        {
-            public void windowClosing(WindowEvent e)
-            {
-                onCancel();
-            }
-        });
     }
 
 
@@ -199,11 +203,12 @@ public class MainWindow extends JDialog
 
     private void SaveImageSelection(final int index)
     {
-        System.out.println("NEW IMAGE SELECTION: " + index);
         selectedImageIndex = index;
         selectedImage = GetImageTableModel().Get(index);
 
         // enable remove button
+        editImageButton.setEnabled(true);
+        findSimilarButton.setEnabled(true);
         removeImageButton.setEnabled(true);
 
         try
@@ -221,12 +226,14 @@ public class MainWindow extends JDialog
 
     private void ClearImageSelection()
     {
-        System.out.println("CLEAR IMAGE SELECTION: ");
         selectedImageIndex = -1;
         selectedImage = null;
 
         // disable remove button
+        editImageButton.setEnabled(false);
+        findSimilarButton.setEnabled(false);
         removeImageButton.setEnabled(false);
+
         imageToBeDisplayed = null;
         imageDisplay.setPreferredSize(new Dimension(1, 1));
 

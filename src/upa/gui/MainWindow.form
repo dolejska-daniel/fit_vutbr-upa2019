@@ -68,28 +68,28 @@
               <text value="Remove Image"/>
             </properties>
           </component>
-          <component id="21142" class="javax.swing.JButton" binding="button3" default-binding="true">
+          <component id="21142" class="javax.swing.JButton" binding="calculateXXXaButton" default-binding="true">
             <constraints>
               <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Button"/>
+              <text value="Calculate XXXa"/>
             </properties>
           </component>
-          <component id="ede5f" class="javax.swing.JButton" binding="button4" default-binding="true">
+          <component id="ede5f" class="javax.swing.JButton" binding="calculateXXXbButton" default-binding="true">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Button"/>
+              <text value="Calculate XXXb"/>
             </properties>
           </component>
-          <component id="bf5db" class="javax.swing.JButton" binding="button5" default-binding="true">
+          <component id="bf5db" class="javax.swing.JButton" binding="calculateXXXcButton" default-binding="true">
             <constraints>
               <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Button"/>
+              <text value="Calculate XXXc"/>
             </properties>
           </component>
         </children>
@@ -135,23 +135,58 @@
                     <properties/>
                     <border type="none"/>
                     <children>
-                      <scrollpane id="7b07e" binding="imageDisplayPane">
-                        <constraints>
-                          <splitpane position="right"/>
-                        </constraints>
-                        <properties>
-                          <horizontalScrollBarPolicy value="32"/>
-                          <verticalScrollBarPolicy value="22"/>
-                        </properties>
-                        <border type="none"/>
-                        <children/>
-                      </scrollpane>
                       <component id="28d5" class="javax.swing.JTable" binding="imagesTable">
                         <constraints>
                           <splitpane position="left"/>
                         </constraints>
                         <properties/>
                       </component>
+                      <grid id="4491e" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                        <margin top="0" left="0" bottom="0" right="0"/>
+                        <constraints>
+                          <splitpane position="right"/>
+                        </constraints>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <scrollpane id="7b07e" binding="imageDisplayPane">
+                            <constraints>
+                              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                            </constraints>
+                            <properties>
+                              <horizontalScrollBarPolicy value="32"/>
+                              <verticalScrollBarPolicy value="22"/>
+                            </properties>
+                            <border type="none"/>
+                            <children/>
+                          </scrollpane>
+                          <toolbar id="549db">
+                            <constraints>
+                              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                                <preferred-size width="-1" height="20"/>
+                              </grid>
+                            </constraints>
+                            <properties>
+                              <floatable value="false"/>
+                            </properties>
+                            <border type="none"/>
+                            <children>
+                              <component id="e1a4c" class="javax.swing.JButton" binding="editImageButton" default-binding="true">
+                                <constraints/>
+                                <properties>
+                                  <text value="Edit Image"/>
+                                </properties>
+                              </component>
+                              <component id="3052a" class="javax.swing.JButton" binding="findSimilarButton" default-binding="true">
+                                <constraints/>
+                                <properties>
+                                  <text value="Find Similar"/>
+                                </properties>
+                              </component>
+                            </children>
+                          </toolbar>
+                        </children>
+                      </grid>
                     </children>
                   </splitpane>
                 </children>

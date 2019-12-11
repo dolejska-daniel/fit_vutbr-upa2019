@@ -1,5 +1,7 @@
 package upa.gui;
 
+import upa.db.entity.Image;
+
 import java.awt.*;
 
 /**
@@ -49,14 +51,22 @@ public class WindowManager
 
     public static void ShowNewImageDialog(final int entry_id)
     {
-        {
-            CreateImage dialog = new CreateImage(entry_id);
-            dialog.pack();
-            dialog.setLocationRelativeTo(mainWindow);
-            dialog.setVisible(true);
+        CreateImage dialog = new CreateImage(entry_id);
+        dialog.pack();
+        dialog.setLocationRelativeTo(mainWindow);
+        dialog.setVisible(true);
 
-            if (dialog.createdImage != null)
-                mainWindow.GetImageTableModel().Insert(dialog.createdImage);
-        }
+        if (dialog.createdImage != null)
+            mainWindow.GetImageTableModel().Insert(dialog.createdImage);
+    }
+
+    public static void ShowEditImageDialog(final Image image)
+    {
+        EditImage dialog = new EditImage(image);
+        dialog.pack();
+        dialog.setLocationRelativeTo(mainWindow);
+        dialog.setVisible(true);
+
+        // TODO: Process results?
     }
 }

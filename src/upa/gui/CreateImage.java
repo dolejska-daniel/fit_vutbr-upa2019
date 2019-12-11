@@ -27,17 +27,20 @@ public class CreateImage extends JDialog
 
     public Image createdImage;
 
+
+    //=====================================================================dd==
+    // CONSTRUCTORS
+    //=====================================================================dd==
+
     public CreateImage(final int entry_id)
     {
+        //-----------------------------------------------------dd--
+        //  Window setup
+        //-----------------------------------------------------dd--
+
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-
-        entryField.setText(String.valueOf(entry_id));
-        buttonSelectFile.addActionListener(e -> SelectImageFile());
-
-        buttonOK.addActionListener(e -> onOK());
-        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -53,6 +56,22 @@ public class CreateImage extends JDialog
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         RegisterListeners();
+
+
+        //-----------------------------------------------------dd--
+        //  Data setup
+        //-----------------------------------------------------dd--
+
+        entryField.setText(String.valueOf(entry_id));
+
+
+        //-----------------------------------------------------dd--
+        //  Listeners setup
+        //-----------------------------------------------------dd--
+
+        buttonSelectFile.addActionListener(e -> SelectImageFile());
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> onCancel());
     }
 
     private void SelectImageFile()
@@ -103,6 +122,11 @@ public class CreateImage extends JDialog
         descriptionField.getDocument().addDocumentListener(new PackDialogOnDocumentChange(this));
         imagePathField.getDocument().addDocumentListener(new PackDialogOnDocumentChange(this));
     }
+
+
+    //=====================================================================dd==
+    // OTHER ACTION METHODS
+    //=====================================================================dd==
 
     private void onOK()
     {
