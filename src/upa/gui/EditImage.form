@@ -87,13 +87,13 @@
               <component id="f73cf" class="javax.swing.JButton" binding="mirrorHorizontallyButton" default-binding="true">
                 <constraints/>
                 <properties>
-                  <text value="Mirror Horizontally"/>
+                  <text value="Flip Horizontally"/>
                 </properties>
               </component>
               <component id="5542c" class="javax.swing.JButton" binding="mirrorVerticallyButton">
                 <constraints/>
                 <properties>
-                  <text value="Mirror Vertically"/>
+                  <text value="Flip Vertically"/>
                 </properties>
               </component>
             </children>

@@ -98,6 +98,49 @@ public class Image extends EntityBase
         }
     }
 
+    private boolean isPrepared = false;
+
+    public void PrepareForUpdate()
+    {
+        if (this.id == 0)
+            throw new GeneralDatabaseException("Cannot load image until record is created in database.");
+
+        if (this.isPrepared)
+            return;
+
+        try
+        {
+            Connection connection = GetConnection();
+            connection.setAutoCommit(false);
+            Get(this.id, true);
+            this.isPrepared = true;
+        }
+        catch (SQLException e)
+        {
+            throw new QueryException("Failed to prepare row for update.", e);
+        }
+    }
+
+    public void CommitUpdate()
+    {
+        if (this.id == 0)
+            throw new GeneralDatabaseException("Cannot load image until record is created in database.");
+
+        if (!this.isPrepared)
+            throw new GeneralDatabaseException("Cannot commit update which has not been prepared.");
+
+        try
+        {
+            Connection connection = GetConnection();
+            connection.setAutoCommit(true);
+            this.isPrepared = false;
+        }
+        catch (SQLException e)
+        {
+            throw new QueryException("Failed to commit row's update.", e);
+        }
+    }
+
     /**
      * Creates Image instance from data from database selection query.
      *

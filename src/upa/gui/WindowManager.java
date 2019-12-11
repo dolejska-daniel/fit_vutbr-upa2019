@@ -67,6 +67,7 @@ public class WindowManager
         dialog.setLocationRelativeTo(mainWindow);
         dialog.setVisible(true);
 
-        // TODO: Process results?
+        mainWindow.ReloadImageToBeDisplayed();
+        mainWindow.repaint();
     }
 }

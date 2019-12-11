@@ -29,7 +29,6 @@ public class EditImage extends JDialog
     private BufferedImage imageToBeDisplayed;
     private BufferedImage imageToBeDisplayedFiltered;
 
-    private int roation = 0;
     private boolean mirrorHorizontal = false;
     private boolean mirrorVertical = false;
 
@@ -140,8 +139,45 @@ public class EditImage extends JDialog
         //  Listeners setup
         //-----------------------------------------------------dd--
 
+        rotate90Button.addActionListener(e -> ProcessRotation(90));
+        rotateMinus90Button.addActionListener(e -> ProcessRotation(-90));
+
+        mirrorHorizontallyButton.addActionListener(e -> ProcessMirror());
+        mirrorVerticallyButton.addActionListener(e -> ProcessFlip());
+
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
+    }
+
+    private void ProcessRotation(final int rotation)
+    {
+        ProcessOracleMultimediaMethod("rotate=" + rotation);
+    }
+
+    private void ProcessMirror()
+    {
+        ProcessOracleMultimediaMethod("mirror");
+    }
+
+    private void ProcessFlip()
+    {
+        ProcessOracleMultimediaMethod("flip");
+    }
+
+    private void ProcessOracleMultimediaMethod(final String method)
+    {
+        try
+        {
+            image.PrepareForUpdate();
+            image.image.process(method);
+            image.CommitUpdate();
+            imageToBeDisplayed = ImageIO.read(image.image.getDataInStream());
+            repaint();
+        }
+        catch (SQLException | IOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
 

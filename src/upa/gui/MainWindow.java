@@ -211,17 +211,7 @@ public class MainWindow extends JDialog
         findSimilarButton.setEnabled(true);
         removeImageButton.setEnabled(true);
 
-        try
-        {
-            imageToBeDisplayed = ImageIO.read(selectedImage.image.getDataInStream());
-            imageDisplay.setPreferredSize(new Dimension(imageToBeDisplayed.getWidth(), imageToBeDisplayed.getHeight()));
-
-            setSize(getWidth() + 1, getHeight() + 1);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        SetImageToBeDisplayed(selectedImage);
     }
 
     private void ClearImageSelection()
@@ -234,10 +224,34 @@ public class MainWindow extends JDialog
         findSimilarButton.setEnabled(false);
         removeImageButton.setEnabled(false);
 
-        imageToBeDisplayed = null;
-        imageDisplay.setPreferredSize(new Dimension(1, 1));
+        ReloadImageToBeDisplayed();
+    }
 
-        setSize(getWidth() - 1, getHeight() - 1);
+    private void SetImageToBeDisplayed(Image image)
+    {
+        try
+        {
+            imageToBeDisplayed = ImageIO.read(image.image.getDataInStream());
+            imageDisplay.setPreferredSize(new Dimension(imageToBeDisplayed.getWidth(), imageToBeDisplayed.getHeight()));
+
+            setSize(getWidth() + 1, getHeight() + 1);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void ReloadImageToBeDisplayed()
+    {
+        if (this.selectedImage != null)
+            SetImageToBeDisplayed(this.selectedImage);
+        else
+        {
+            imageToBeDisplayed = null;
+            imageDisplay.setPreferredSize(new Dimension(1, 1));
+            setSize(getWidth() - 1, getHeight() - 1);
+        }
     }
 
 
