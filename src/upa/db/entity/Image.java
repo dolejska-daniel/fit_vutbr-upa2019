@@ -89,6 +89,7 @@ public class Image extends EntityBase
             this.image.setProperties();
 
             Update();
+            GenerateFeatures();
 
             connection.setAutoCommit(true);
         }
@@ -283,6 +284,71 @@ public class Image extends EntityBase
         }
 
         return array;
+    }
+
+    public List<Image> GetAllSimilar()
+    {
+        ArrayList<Image> array = new ArrayList<>();
+
+        // define SQL query
+        final String query = "SELECT dst.*, SI_ScoreByFtrList(new SI_FeatureList(src.image_ac, 0.3, src.image_ch, 0.3, src.image_pc, 0.1, src.image_tx, 0.3), dst.image_si) AS similarity " +
+                "FROM images src, IMAGES dst " +
+                "WHERE src.id != dst.id AND src.id=? " +
+                "ORDER BY similarity";
+        try (PreparedStatement selectQuery = GetConnection().prepareStatement(query))
+        {
+            // set query parameters
+            selectQuery.setInt(1, this.id);
+
+            // execute query
+            ResultSet resultSet = selectQuery.executeQuery();
+            if (resultSet == null || !resultSet.next())
+                return array;
+
+            Image.FillArrayFromResultSet(resultSet, array);
+        }
+        catch (Exception e)
+        {
+            throw new QueryException("Failed to process Image 'GET ALL SIMILAR' query.", e);
+        }
+
+        return array;
+    }
+
+    public void GenerateFeatures() throws QueryException
+    {
+        // define SQL query
+        final String query1 = "UPDATE images i SET image_si=SI_StillImage(i.image.getContent()) WHERE id=?";
+        try (PreparedStatement updateQuery = GetConnection().prepareStatement(query1))
+        {
+            // set query parameters
+            updateQuery.setInt(1, this.id);
+
+            // execute procedure
+            updateQuery.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            throw new QueryException("Failed to execute IMAGES_GENERATE_FEATURES procedure.", e);
+        }
+
+        // define SQL query
+        final String query2 = "UPDATE images i SET " +
+                "image_ac=SI_AverageColor(i.image_si), image_ch=SI_ColorHistogram(i.image_si), " +
+                "image_pc=SI_PositionalColor(i.image_si), image_tx=SI_Texture(i.image_si) " +
+                "WHERE i.id=?";
+        try (PreparedStatement updateQuery = GetConnection().prepareStatement(query2))
+        {
+            // set query parameters
+            updateQuery.setInt(1, this.id);
+
+            // execute procedure
+            updateQuery.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            throw new QueryException("Failed to execute IMAGES_GENERATE_FEATURES procedure.", e);
+        }
     }
 
     /**

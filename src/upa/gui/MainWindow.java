@@ -127,7 +127,7 @@ public class MainWindow extends JDialog
             imagesTable.getSelectionModel().clearSelection();
         });
         editImageButton.addActionListener(e -> WindowManager.ShowEditImageDialog(selectedImage));
-        // findSimilarButton.addActionListener(e -> WindowManager.ShowFindSimilarImagesDialog(selectedImage));
+        findSimilarButton.addActionListener(e -> WindowManager.ShowSimilarImagesDialog(selectedImage));
 
         //-----------------------------------------------------dd--
         //  Image canvas setup

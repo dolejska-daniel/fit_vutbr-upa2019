@@ -70,4 +70,11 @@ public class WindowManager
         mainWindow.ReloadImageToBeDisplayed();
         mainWindow.repaint();
     }
+
+    public static void ShowSimilarImagesDialog(Image image)
+    {
+        SimilarImages window = new SimilarImages(image);
+        window.setLocationRelativeTo(mainWindow);
+        window.setVisible(true);
+    }
 }

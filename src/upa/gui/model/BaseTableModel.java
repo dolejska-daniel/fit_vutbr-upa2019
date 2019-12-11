@@ -14,6 +14,8 @@ public abstract class BaseTableModel implements TableModel
 {
     private List<TableModelListener> listeners = new ArrayList<>();
 
+    protected Boolean isEditable = true;
+
     protected void NotifyTableUpdate(final int rowIndex, final int columnIndex)
     {
         TableModelEvent event = new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE);
@@ -54,5 +56,10 @@ public abstract class BaseTableModel implements TableModel
     public void removeTableModelListener(TableModelListener l)
     {
         listeners.remove(l);
+    }
+
+    public void SetEditable(boolean isEditable)
+    {
+        this.isEditable = isEditable;
     }
 }

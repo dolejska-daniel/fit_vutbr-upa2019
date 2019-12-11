@@ -105,7 +105,7 @@ public class EntryTableModel extends BaseTableModel
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex)
     {
-        return columnIndex > 0;
+        return columnIndex > 0 && this.isEditable;
     }
 
     @Override

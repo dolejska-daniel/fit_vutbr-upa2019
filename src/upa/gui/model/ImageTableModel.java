@@ -46,16 +46,21 @@ public class ImageTableModel extends BaseTableModel
 
     public void SetEntryId(final int entry_id)
     {
+        if (entry_id == -1)
+            return;
+
+        SetImagesList(Image.GetAll(entry_id));
+    }
+
+    public void SetImagesList(List<Image> images)
+    {
         int imagesCount = getRowCount();
         while (imagesCount-- != 0)
         {
             Remove(0);
         }
 
-        if (entry_id == -1)
-            return;
-
-        images = Image.GetAll(entry_id);
+        this.images = images;
         NotifyTableReload(0, images.size() - 1);
     }
 
@@ -134,7 +139,7 @@ public class ImageTableModel extends BaseTableModel
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex)
     {
-        return columnIndex > 0 && columnIndex != 3;
+        return columnIndex > 0 && columnIndex != 3 && this.isEditable;
     }
 
     @Override
