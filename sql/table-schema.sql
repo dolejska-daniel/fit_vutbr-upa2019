@@ -46,3 +46,18 @@ CREATE TABLE geometry
         FOREIGN KEY (entry_id)
             REFERENCES entries (id)
 );
+
+--=========================================================================dd==
+--  METADATA CREATION
+--=========================================================================dd==
+
+DELETE
+FROM USER_SDO_GEOM_METADATA
+WHERE TABLE_NAME = 'GEOMETRY'
+  AND COLUMN_NAME = 'DATA';
+
+INSERT INTO USER_SDO_GEOM_METADATA
+VALUES ('geometry', 'data', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 4096, 0.1), SDO_DIM_ELEMENT('Y', 0, 4096, 0.1)),
+        NULL);
+
+COMMIT;

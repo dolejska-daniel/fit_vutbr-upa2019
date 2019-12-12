@@ -39,13 +39,14 @@ public class MainWindow extends JDialog
     private JTable geometryTable;
     private JButton rectangleButton;
     private JButton button2;
-    private JButton calculateXXXaButton;
-    private JButton calculateXXXbButton;
-    private JButton calculateXXXcButton;
+    private JButton measureFloorAreaButton;
+    private JButton measureObjectAreaButton;
+    private JButton measureClearFloorAreaButton;
     private JButton editImageButton;
     private JButton findSimilarButton;
     private JPanel geometryDisplay;
     private JComboBox geometryType;
+    private JButton removeGeometryButton;
 
     private JPanel imageDisplayWrapper;
     private JPanel imageDisplay;
@@ -196,6 +197,23 @@ public class MainWindow extends JDialog
         //  Geometry buttons setup
         //-----------------------------------------------------dd--
 
+        removeGeometryButton.addActionListener(e -> {
+            GetGeometryTableModel().Delete(selectedGeometryIndex);
+            geometryTable.getSelectionModel().clearSelection();
+        });
+        measureFloorAreaButton.addActionListener(e -> {
+            double area = Geometry.GetArea(selectedEntry.id, "Floor");
+            WindowManager.ShowMessageDialog(String.format("Floor area for %s (ID %d) amounts to: %.3f", selectedEntry.name, selectedEntry.id, area), "Floor Area Measurement");
+        });
+        measureObjectAreaButton.addActionListener(e -> {
+            double area = Geometry.GetArea(selectedEntry.id, "Object");
+            WindowManager.ShowMessageDialog(String.format("Object area for %s (ID %d) amounts to: %.3f", selectedEntry.name, selectedEntry.id, area), "Object Area Measurement");
+        });
+        measureClearFloorAreaButton.addActionListener(e -> {
+            double area = Geometry.GetClearArea(selectedEntry.id, "Floor");
+            WindowManager.ShowMessageDialog(String.format("Clear floor area for %s (ID %d) amounts to: %.3f", selectedEntry.name, selectedEntry.id, area), "Clear Floor Area Measurement");
+        });
+
         //-----------------------------------------------------dd--
         //  Geometry canvas setup
         //-----------------------------------------------------dd--
@@ -281,6 +299,8 @@ public class MainWindow extends JDialog
                 }
             }
         };
+        geometryDisplayPane.getHorizontalScrollBar().setUnitIncrement(16);
+        geometryDisplayPane.getVerticalScrollBar().setUnitIncrement(16);
         geometryDisplayPane.setViewportView(geometryDisplay);
         geometryDisplay.addMouseListener(new MouseAdapter()
         {
@@ -348,8 +368,6 @@ public class MainWindow extends JDialog
 
             b.setEnabled(false);
         });
-
-        // TODO: Work with type
     }
 
     private void ActivateRectangleListener()
@@ -383,11 +401,14 @@ public class MainWindow extends JDialog
         removeEntryButton.setEnabled(true);
         newImageButton.setEnabled(true);
         tabbedPane.setEnabled(true);
+        measureFloorAreaButton.setEnabled(true);
+        measureObjectAreaButton.setEnabled(true);
+        measureClearFloorAreaButton.setEnabled(true);
 
         // reload image table
         GetImageTableModel().SetEntryId(selectedEntry.id);
         GetGeometryTableModel().SetEntryId(selectedEntry.id);
-        // TODO: Reload geometry table
+        SyncGeometryDisplaySize();
     }
 
     private void ClearEntrySelection()
@@ -399,10 +420,14 @@ public class MainWindow extends JDialog
         removeEntryButton.setEnabled(false);
         newImageButton.setEnabled(false);
         tabbedPane.setEnabled(false);
+        measureFloorAreaButton.setEnabled(false);
+        measureObjectAreaButton.setEnabled(false);
+        measureClearFloorAreaButton.setEnabled(false);
 
         // reload image table
         GetImageTableModel().SetEntryId(-1);
         GetGeometryTableModel().SetEntryId(-1);
+        SyncGeometryDisplaySize();
     }
 
     //-----------------------------------------------------dd--
@@ -419,7 +444,7 @@ public class MainWindow extends JDialog
         selectedImageIndex = index;
         selectedImage = GetImageTableModel().Get(index);
 
-        // enable remove button
+        // enable relevant objects
         editImageButton.setEnabled(true);
         findSimilarButton.setEnabled(true);
         removeImageButton.setEnabled(true);
@@ -432,7 +457,7 @@ public class MainWindow extends JDialog
         selectedImageIndex = -1;
         selectedImage = null;
 
-        // disable remove button
+        // disable relevant objects
         editImageButton.setEnabled(false);
         findSimilarButton.setEnabled(false);
         removeImageButton.setEnabled(false);
@@ -481,7 +506,8 @@ public class MainWindow extends JDialog
         selectedGeometryIndex = index;
         selectedGeometry = GetGeometryTableModel().Get(index);
 
-        // TODO: disable remove button?
+        // enable relevant objects
+        removeGeometryButton.setEnabled(true);
 
         geometryDisplay.repaint();
         geometryDisplayPane.repaint();
@@ -492,7 +518,8 @@ public class MainWindow extends JDialog
         selectedGeometryIndex = -1;
         selectedGeometry = null;
 
-        // TODO: disable remove button?
+        // disable relevant objects
+        removeGeometryButton.setEnabled(false);
 
         geometryDisplay.repaint();
         geometryDisplayPane.repaint();
@@ -529,12 +556,39 @@ public class MainWindow extends JDialog
 
             GetGeometryTableModel().Insert(g);
             RemoveActiveGeometry();
-            geometryDisplay.repaint();
+
+            SyncGeometryDisplaySize();
+            repaint();
         }
         catch (ConversionException e)
         {
             e.printStackTrace();
         }
+    }
+
+    public void SyncGeometryDisplaySize()
+    {
+        GeometryTableModel model = GetGeometryTableModel();
+        if (model.getRowCount() == 0)
+        {
+            geometryDisplay.setPreferredSize(new Dimension(0, 0));
+            return;
+        }
+
+        Rectangle initialBounds = model.Get(0).Shape().getBounds();
+        double maxX = initialBounds.getMaxX(), maxY = initialBounds.getMaxY();
+
+        for (int i = 0; i < model.getRowCount(); i++)
+        {
+            Geometry g = model.Get(i);
+            Rectangle bounds = g.Shape().getBounds();
+
+            maxX = Math.max(maxX, bounds.getMaxX());
+            maxY = Math.max(maxY, bounds.getMaxY());
+        }
+
+        geometryDisplay.setPreferredSize(new Dimension((int) maxX + 40, (int) maxY + 40));
+        setSize(getWidth() + 1, getHeight() + 1);
     }
 
 

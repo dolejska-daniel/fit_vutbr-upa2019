@@ -209,6 +209,54 @@ public class Geometry extends EntityBase
         return array;
     }
 
+    public static double GetArea(final int entry_id, final String type)
+    {
+        // define SQL query
+        final String query = "SELECT SUM(SDO_GEOM.SDO_AREA(g.data, 1)) " +
+                "FROM geometry g WHERE g.entry_id=? AND g.type LIKE ?";
+        try (PreparedStatement insertQuery = GetConnection().prepareStatement(query))
+        {
+            // set query parameters
+            insertQuery.setInt(1, entry_id);
+            insertQuery.setString(2, type);
+
+            // execute insertion
+            ResultSet result = insertQuery.executeQuery();
+
+            result.next();
+            return result.getDouble(1);
+        }
+        catch (Exception e)
+        {
+            throw new QueryException("Failed to process Geometry 'INSERT' query.", e);
+        }
+    }
+
+    public static double GetClearArea(final int entry_id, final String type)
+    {
+        // define SQL query
+        final String query = "SELECT SUM(DISTINCT SDO_GEOM.SDO_AREA(g1.DATA)) - SUM(SDO_GEOM.SDO_AREA(SDO_GEOM.SDO_INTERSECTION(g1.data, g2.data))) " +
+                "FROM geometry g1, geometry g2 WHERE g1.entry_id=? AND g1.type LIKE ? AND g2.entry_id=? AND g2.type NOT LIKE ?";
+        try (PreparedStatement insertQuery = GetConnection().prepareStatement(query))
+        {
+            // set query parameters
+            insertQuery.setInt(1, entry_id);
+            insertQuery.setString(2, type);
+            insertQuery.setInt(3, entry_id);
+            insertQuery.setString(4, type);
+
+            // execute insertion
+            ResultSet result = insertQuery.executeQuery();
+
+            result.next();
+            return result.getDouble(1);
+        }
+        catch (Exception e)
+        {
+            throw new QueryException("Failed to process Geometry 'INSERT' query.", e);
+        }
+    }
+
     /**
      * Inserts new row with this object's data into database.
      *

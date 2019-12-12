@@ -2,6 +2,7 @@ package upa.gui;
 
 import upa.db.entity.Image;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -76,5 +77,15 @@ public class WindowManager
         SimilarImages window = new SimilarImages(image);
         window.setLocationRelativeTo(mainWindow);
         window.setVisible(true);
+    }
+
+    public static void ShowMessageDialog(final String message, final String title)
+    {
+        WindowManager.ShowMessageDialog(message, title, mainWindow);
+    }
+
+    public static void ShowMessageDialog(final String message, final String title, Component parent)
+    {
+        JOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
 }

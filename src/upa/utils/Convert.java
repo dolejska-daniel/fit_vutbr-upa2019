@@ -78,7 +78,7 @@ public class Convert
         try
         {
             JGeometry result = JGeometry.load(data);
-            System.out.println("geometry loaded: " + result.toStringFull());
+            // System.out.println("geometry loaded: " + result.toStringFull());
 
             return result;
         }
