@@ -7,6 +7,7 @@ import upa.utils.Convert;
 import upa.utils.Query;
 import upa.utils.exception.ConversionException;
 
+import java.awt.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,6 +60,23 @@ public class Geometry extends EntityBase
     //=====================================================================dd==
     // HELPER METHODS
     //=====================================================================dd==
+
+    private Shape convertedData;
+
+    public Shape Shape()
+    {
+        try
+        {
+            if (convertedData == null)
+                convertedData = Convert.JGeometryToShape(this.data);
+        }
+        catch (ConversionException e)
+        {
+            e.printStackTrace();
+        }
+
+        return convertedData;
+    }
 
     /**
      * Creates Geometry instance from data from database selection query.
@@ -210,7 +228,7 @@ public class Geometry extends EntityBase
             // set query parameters
             insertQuery.setInt(1, this.entry_id);
             insertQuery.setString(2, this.type);
-            insertQuery.setObject(3, JGeometry.store(this.data));
+            insertQuery.setObject(3, JGeometry.store(GetConnection(), this.data));
 
             // register return parameter
             Query.RegisterReturnId(insertQuery, 4);

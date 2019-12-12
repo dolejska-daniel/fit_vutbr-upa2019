@@ -87,5 +87,23 @@ public class Convert
             throw new ConversionException("Failed to convert database data to JGeometry object instance.", exception);
         }
     }
+
+    public static JGeometry ShapeToJGeometry(Shape shape) throws ConversionException
+    {
+        // check a type of JGeometry object
+        if (shape instanceof Rectangle)
+        {
+            Rectangle rec = (Rectangle) shape;
+            Point pt = rec.getLocation();
+            return JGeometry.createLinearPolygon(new double[]{
+                    pt.getX(), pt.getY(),
+                    pt.getX() + rec.getWidth(), pt.getY(),
+                    pt.getX() + rec.getWidth(), pt.getY() + rec.getHeight(),
+                    pt.getX(), pt.getY() + rec.getHeight(),
+            }, 2, 0);
+        }
+
+        throw new ConversionException("Unable to convert provided Shape instance to JGeometry instance.");
+    }
 }
 

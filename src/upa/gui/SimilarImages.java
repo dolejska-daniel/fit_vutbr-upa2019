@@ -21,8 +21,6 @@ public class SimilarImages extends JFrame
     private JPanel imageDisplayPane;
 
     private BufferedImage imageToBeDisplayedFiltered;
-    private int selectedImageIndex;
-    private Image selectedImage;
     private BufferedImage imageToBeDisplayed;
 
     public SimilarImages(Image image)
@@ -108,8 +106,7 @@ public class SimilarImages extends JFrame
 
     private void SaveImageSelection(int index)
     {
-        selectedImageIndex = index;
-        selectedImage = GetImageTableModel().Get(index);
+        Image selectedImage = GetImageTableModel().Get(index);
 
         SetImageToBeDisplayed(selectedImage);
     }
