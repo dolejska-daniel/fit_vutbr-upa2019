@@ -1,10 +1,10 @@
 package upa.db;
 
 import oracle.jdbc.pool.OracleDataSource;
+import upa.gui.WindowManager;
 
+import java.io.File;
 import java.io.FileInputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -25,21 +25,28 @@ public class Connection
     {
         // create connection properties
         Properties props = new Properties();
-        // get current working directory and find configuration file
-        Path config_path = FileSystems.getDefault().getPath("config/database.txt").toAbsolutePath();
+        // create configuration file instance
+        final File file = new File("config/database.txt");
+        // validate that the file exists
+        if (!file.exists())
+        {
+            WindowManager.ShowErrorMessageDialog(String.format("Database configuration file does not exist in '%s'.\n\nProgram will now exit.", file.toPath().toAbsolutePath()), "Database configuration not found");
+            System.exit(1);
+        }
+
         // try to load configuration from this file
         try
         {
-            FileInputStream config = new FileInputStream(config_path.toString());
+            FileInputStream config = new FileInputStream(file);
             props.load(config);
         }
         catch (Exception e)
         {
             String message = String.format(
-                    "Failed to load database configuration from file '%s'!\nEncountered exception %s: '%s'",
-                    config_path, e.getClass(), e.getMessage()
+                    "Failed to load database configuration from file '%s'!\nEncountered exception %s: %s\n\nProgram will now exit.",
+                    file.toPath().toAbsolutePath(), e.getClass(), e.getMessage()
             );
-            System.err.println(message);
+            WindowManager.ShowErrorMessageDialog(message, "Database configuration failed to load");
             System.exit(1);
         }
 

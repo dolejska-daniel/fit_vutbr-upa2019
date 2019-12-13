@@ -5,7 +5,7 @@ import upa.db.Connection;
 import upa.db.entity.Entry;
 import upa.db.entity.Geometry;
 import upa.db.entity.Image;
-import upa.gui.listener.GeometryRectMouseListener;
+import upa.gui.listener.*;
 import upa.gui.model.EntryTableModel;
 import upa.gui.model.GeometryTableModel;
 import upa.gui.model.ImageTableModel;
@@ -16,12 +16,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainWindow extends JDialog
 {
@@ -38,7 +36,7 @@ public class MainWindow extends JDialog
     private JButton removeImageButton;
     private JTable geometryTable;
     private JButton rectangleButton;
-    private JButton button2;
+    private JButton circleButton;
     private JButton measureFloorAreaButton;
     private JButton measureObjectAreaButton;
     private JButton measureClearFloorAreaButton;
@@ -47,6 +45,8 @@ public class MainWindow extends JDialog
     private JPanel geometryDisplay;
     private JComboBox geometryType;
     private JButton removeGeometryButton;
+    private JButton areaButton;
+    private JButton ellipseButton;
 
     private JPanel imageDisplayWrapper;
     private JPanel imageDisplay;
@@ -69,7 +69,9 @@ public class MainWindow extends JDialog
     {
         {
             add(rectangleButton);
-            add(button2);
+            add(circleButton);
+            add(ellipseButton);
+            add(areaButton);
         }
     };
 
@@ -308,33 +310,24 @@ public class MainWindow extends JDialog
         geometryDisplayPane.getHorizontalScrollBar().setUnitIncrement(16);
         geometryDisplayPane.getVerticalScrollBar().setUnitIncrement(16);
         geometryDisplayPane.setViewportView(geometryDisplay);
-        geometryDisplay.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                if (activeGeometry != null)
-                    return;
-
-                boolean found = false;
-                List<Geometry> geometryList = GetGeometryTableModel().GetGeometryList();
-                for (int i = geometryList.size() - 1; i >= 0; --i)
-                {
-                    Geometry geometry = geometryList.get(i);
-                    if (geometry.Shape().contains(e.getPoint()))
-                    {
-                        geometryTable.getSelectionModel().setSelectionInterval(i, i);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                    geometryTable.getSelectionModel().clearSelection();
-            }
-        });
+        geometryDisplay.addMouseListener(new SelectionGeometryMouseListener(this));
+        // final DefaultGeometryMouseListener geometryMouseListener = new DefaultGeometryMouseListener(this);
+        // geometryDisplay.addMouseListener(geometryMouseListener);
+        // geometryDisplay.addMouseMotionListener(geometryMouseListener);
 
         rectangleButton.addActionListener(e -> ActivateRectangleListener());
+        ellipseButton.addActionListener(e -> ActivateEllipseListener());
+        circleButton.addActionListener(e -> ActivateCircleListener());
+        areaButton.addActionListener(e -> ActivateAreaListener());
+
+        // TODO:
+        // - přesouvání geometrie v GUI
+        // - order geometrie?
+    }
+
+    public boolean HasActiveGeometryListener()
+    {
+        return currentGeometryListener != null;
     }
 
     private void DeactivateCurrentListener()
@@ -382,6 +375,30 @@ public class MainWindow extends JDialog
             DeactivateCurrentListener();
         else
             ActivateListener(new GeometryRectMouseListener(this), rectangleButton);
+    }
+
+    private void ActivateAreaListener()
+    {
+        if (currentGeometryButton == areaButton)
+            DeactivateCurrentListener();
+        else
+            ActivateListener(new GeometryAreaMouseListener(this), areaButton);
+    }
+
+    private void ActivateCircleListener()
+    {
+        if (currentGeometryButton == circleButton)
+            DeactivateCurrentListener();
+        else
+            ActivateListener(new GeometryCircleMouseListener(this), circleButton);
+    }
+
+    private void ActivateEllipseListener()
+    {
+        if (currentGeometryButton == ellipseButton)
+            DeactivateCurrentListener();
+        else
+            ActivateListener(new GeometryEllipseMouseListener(this), ellipseButton);
     }
 
 
@@ -502,7 +519,12 @@ public class MainWindow extends JDialog
     //  Geometry table methods
     //-----------------------------------------------------dd--
 
-    private GeometryTableModel GetGeometryTableModel()
+    public JTable GetGeometryTable()
+    {
+        return geometryTable;
+    }
+
+    public GeometryTableModel GetGeometryTableModel()
     {
         return (GeometryTableModel) geometryTable.getModel();
     }
@@ -531,6 +553,14 @@ public class MainWindow extends JDialog
         geometryDisplayPane.repaint();
     }
 
+    public Geometry GetSelectedGeometry()
+    {
+        if (selectedGeometry == null)
+            return null;
+
+        return selectedGeometry;
+    }
+
     //-----------------------------------------------------dd--
     //  Active geometry methods
     //-----------------------------------------------------dd--
@@ -556,9 +586,11 @@ public class MainWindow extends JDialog
             g.type = String.valueOf(geometryType.getSelectedItem());
             g.data = Convert.ShapeToJGeometry(activeGeometry);
             g.Create();
+            System.out.println("Created new Geometry: EntryID=" + g.entry_id + ", ID=" + g.id);
 
             // TODO: Save geometry
             // activeGeometry
+
 
             GetGeometryTableModel().Insert(g);
             RemoveActiveGeometry();

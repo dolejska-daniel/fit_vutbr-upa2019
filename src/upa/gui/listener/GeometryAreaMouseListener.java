@@ -6,14 +6,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class GeometryRectMouseListener extends MouseAdapter
+public class GeometryAreaMouseListener extends MouseAdapter
 {
     private MainWindow mainWindow;
 
     private Point sourcePoint;
     private Rectangle rectangle;
 
-    public GeometryRectMouseListener(MainWindow mainWindow)
+    public GeometryAreaMouseListener(MainWindow mainWindow)
     {
         super();
         this.mainWindow = mainWindow;
@@ -66,12 +66,6 @@ public class GeometryRectMouseListener extends MouseAdapter
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        if (rectangle.getWidth() == 0 || rectangle.getHeight() == 0)
-        {
-            DestroyActiveShape();
-            return;
-        }
-
         SaveActiveShape();
     }
 

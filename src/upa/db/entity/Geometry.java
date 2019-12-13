@@ -78,6 +78,19 @@ public class Geometry extends EntityBase
         return convertedData;
     }
 
+    public void SetShape(Shape shape)
+    {
+        try
+        {
+            data = Convert.ShapeToJGeometry(shape);
+            convertedData = shape;
+        }
+        catch (ConversionException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Creates Geometry instance from data from database selection query.
      *

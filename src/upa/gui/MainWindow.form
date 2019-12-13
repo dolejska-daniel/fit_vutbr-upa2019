@@ -3,7 +3,7 @@
   <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="48" y="54" width="798" height="432"/>
+      <xy x="48" y="54" width="1024" height="432"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -232,7 +232,9 @@
                         <constraints>
                           <splitpane position="left"/>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <autoResizeMode value="2"/>
+                        </properties>
                       </component>
                       <grid id="bf69" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                         <margin top="0" left="0" bottom="0" right="0"/>
@@ -282,11 +284,23 @@
                                       <text value="Rectangle"/>
                                     </properties>
                                   </component>
-                                  <component id="bbc65" class="javax.swing.JButton" binding="button2" default-binding="true">
+                                  <component id="bbc65" class="javax.swing.JButton" binding="circleButton">
                                     <constraints/>
                                     <properties>
-                                      <enabled value="false"/>
-                                      <text value="Button"/>
+                                      <enabled value="true"/>
+                                      <text value="Circle"/>
+                                    </properties>
+                                  </component>
+                                  <component id="6dc6d" class="javax.swing.JButton" binding="ellipseButton" default-binding="true">
+                                    <constraints/>
+                                    <properties>
+                                      <text value="Ellipse"/>
+                                    </properties>
+                                  </component>
+                                  <component id="d78b3" class="javax.swing.JButton" binding="areaButton" default-binding="true">
+                                    <constraints/>
+                                    <properties>
+                                      <text value="Area"/>
                                     </properties>
                                   </component>
                                   <hspacer id="1a59b">

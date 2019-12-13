@@ -5,15 +5,16 @@ import upa.gui.MainWindow;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 
-public class GeometryRectMouseListener extends MouseAdapter
+public class GeometryEllipseMouseListener extends MouseAdapter
 {
     private MainWindow mainWindow;
 
     private Point sourcePoint;
-    private Rectangle rectangle;
+    private Ellipse2D ellipse;
 
-    public GeometryRectMouseListener(MainWindow mainWindow)
+    public GeometryEllipseMouseListener(MainWindow mainWindow)
     {
         super();
         this.mainWindow = mainWindow;
@@ -22,21 +23,21 @@ public class GeometryRectMouseListener extends MouseAdapter
     private void CreateNewShape(Point point)
     {
         sourcePoint = point;
-        rectangle = new Rectangle(point);
-        mainWindow.SetActiveGeometry(rectangle);
+        ellipse = new Ellipse2D.Double(point.getX(), point.getY(), 0, 0);
+        mainWindow.SetActiveGeometry(ellipse);
     }
 
     private void DestroyActiveShape()
     {
         mainWindow.RemoveActiveGeometry();
-        rectangle = null;
+        ellipse = null;
         sourcePoint = null;
     }
 
     private void SaveActiveShape()
     {
         mainWindow.SaveActiveGeometry();
-        rectangle = null;
+        ellipse = null;
         sourcePoint = null;
     }
 
@@ -49,24 +50,17 @@ public class GeometryRectMouseListener extends MouseAdapter
     @Override
     public void mouseDragged(MouseEvent e)
     {
-        if (rectangle == null || sourcePoint == null)
+        if (ellipse == null || sourcePoint == null)
             return;
 
-        int distanceX = e.getX() - (int) sourcePoint.getX();
-        int distanceY = e.getY() - (int) sourcePoint.getY();
-        rectangle.setSize(Math.abs(distanceX), Math.abs(distanceY));
-
-        distanceX *= -(-1 + (int) Math.signum(distanceX)) >> 1;
-        distanceY *= -(-1 + (int) Math.signum(distanceY)) >> 1;
-        rectangle.setLocation(sourcePoint.x + distanceX, sourcePoint.y + distanceY);
-
+        ellipse.setFrameFromCenter(ellipse.getCenterX(), ellipse.getCenterY(), e.getX(), e.getY());
         mainWindow.repaint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        if (rectangle.getWidth() == 0 || rectangle.getHeight() == 0)
+        if (ellipse.getWidth() == 0 || ellipse.getHeight() == 0)
         {
             DestroyActiveShape();
             return;

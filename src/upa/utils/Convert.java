@@ -5,6 +5,7 @@ import upa.utils.exception.ConversionException;
 
 import java.awt.*;
 import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -101,6 +102,16 @@ public class Convert
                     pt.getX() + rec.getWidth(), pt.getY() + rec.getHeight(),
                     pt.getX(), pt.getY() + rec.getHeight(),
             }, 2, 0);
+        }
+        else if (shape instanceof Ellipse2D)
+        {
+            Ellipse2D ellipse = (Ellipse2D) shape;
+
+            final Point pt1 = ellipse.getBounds().getLocation();
+            pt1.x += (ellipse.getBounds().getMaxX() - pt1.x) / 2;
+
+            final double r = pt1.distance(ellipse.getCenterX(), ellipse.getCenterY());
+            return JGeometry.createCircle(ellipse.getCenterX(), ellipse.getCenterY(), r, 2);
         }
 
         throw new ConversionException("Unable to convert provided Shape instance to JGeometry instance.");
