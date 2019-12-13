@@ -3,6 +3,7 @@ package upa.gui.model;
 import upa.db.entity.Geometry;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -94,6 +95,11 @@ public class GeometryTableModel extends BaseTableModel
         Geometry geometry = this.geometry.get(rowIndex);
         geometry.Delete();
         Remove(rowIndex);
+    }
+
+    public void Sort()
+    {
+        geometry.sort(Comparator.comparingInt(o -> o.layer));
     }
 
 

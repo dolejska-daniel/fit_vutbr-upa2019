@@ -33,6 +33,11 @@ public class Geometry extends EntityBase
     public int entry_id;
 
     /**
+     * Layer identifier.
+     */
+    public int layer;
+
+    /**
      * Geometry type.
      */
     public String type;
@@ -54,6 +59,7 @@ public class Geometry extends EntityBase
 
     public Geometry()
     {
+        this.layer = GetNextLayerId();
     }
 
     public Geometry(final int id)
@@ -96,6 +102,13 @@ public class Geometry extends EntityBase
         }
     }
 
+    private static int highestLayerId = 0;
+
+    private static int GetNextLayerId()
+    {
+        return highestLayerId++;
+    }
+
     /**
      * Creates Geometry instance from data from database selection query.
      *
@@ -108,9 +121,10 @@ public class Geometry extends EntityBase
         Geometry geometry = new Geometry();
         geometry.id = resultSet.getInt(1);
         geometry.entry_id = resultSet.getInt(2);
-        geometry.type = resultSet.getString(3);
-        geometry.internal_type = resultSet.getString(4);
-        geometry.data = Convert.DbDataToJGeometry(resultSet.getBytes(5));
+        geometry.layer = resultSet.getInt(3);
+        geometry.type = resultSet.getString(4);
+        geometry.internal_type = resultSet.getString(5);
+        geometry.data = Convert.DbDataToJGeometry(resultSet.getBytes(6));
 
         return geometry;
     }
@@ -148,7 +162,7 @@ public class Geometry extends EntityBase
     public static Geometry Get(final int id)
     {
         // define SQL query
-        final String query = "SELECT * FROM geometry WHERE id=?";
+        final String query = "SELECT * FROM geometry WHERE id=? ORDER BY layer";
         try (PreparedStatement selectQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
@@ -175,10 +189,11 @@ public class Geometry extends EntityBase
      */
     public static List<Geometry> GetAll() throws QueryException
     {
+        highestLayerId = 0;
         ArrayList<Geometry> array = new ArrayList<>();
 
         // define SQL query
-        final String query = "SELECT * FROM geometry";
+        final String query = "SELECT * FROM geometry ORDER BY entry_id, layer";
         try (PreparedStatement selectQuery = GetConnection().prepareStatement(query))
         {
             // execute query
@@ -204,10 +219,11 @@ public class Geometry extends EntityBase
      */
     public static List<Geometry> GetAll(final int entry_id) throws QueryException
     {
+        highestLayerId = 0;
         ArrayList<Geometry> array = new ArrayList<>();
 
         // define SQL query
-        final String query = "SELECT * FROM geometry WHERE entry_id=?";
+        final String query = "SELECT * FROM geometry WHERE entry_id=? ORDER BY layer";
         try (PreparedStatement selectQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
@@ -288,18 +304,19 @@ public class Geometry extends EntityBase
             throw new QueryException("Geometry instance is not set, cannot execute insertion without it.");
 
         // define SQL query
-        final String query = "INSERT INTO geometry (entry_id, type, internal_type, data) " +
-                "VALUES (?, ?, ?, ?) RETURNING id INTO ?";
+        final String query = "INSERT INTO geometry (entry_id, layer, type, internal_type, data) " +
+                "VALUES (?, ?, ?, ?, ?) RETURNING id INTO ?";
         try (PreparedStatement insertQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
             insertQuery.setInt(1, this.entry_id);
-            insertQuery.setString(2, this.type);
-            insertQuery.setString(3, this.internal_type);
-            insertQuery.setObject(4, JGeometry.store(GetConnection(), this.data));
+            insertQuery.setInt(2, this.layer);
+            insertQuery.setString(3, this.type);
+            insertQuery.setString(4, this.internal_type);
+            insertQuery.setObject(5, JGeometry.store(GetConnection(), this.data));
 
             // register return parameter
-            Query.RegisterReturnId(insertQuery, 5);
+            Query.RegisterReturnId(insertQuery, 6);
             // execute insertion
             insertQuery.executeUpdate();
             // TODO: Check whether insertion was successful?
@@ -326,15 +343,16 @@ public class Geometry extends EntityBase
             throw new QueryException("Geometry instance is not set, cannot execute update without it.");
 
         // define SQL query
-        final String query = "UPDATE geometry SET entry_id=?, type=?, internal_type=?, data=? WHERE id=?";
+        final String query = "UPDATE geometry SET entry_id=?, layer=?, type=?, internal_type=?, data=? WHERE id=?";
         try (PreparedStatement updateQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
             updateQuery.setInt(1, this.entry_id);
-            updateQuery.setString(2, this.type);
-            updateQuery.setString(3, this.internal_type);
-            updateQuery.setObject(4, JGeometry.store(GetConnection(), this.data));
-            updateQuery.setInt(5, this.id);
+            updateQuery.setInt(2, this.layer);
+            updateQuery.setString(3, this.type);
+            updateQuery.setString(4, this.internal_type);
+            updateQuery.setObject(5, JGeometry.store(GetConnection(), this.data));
+            updateQuery.setInt(6, this.id);
 
             // execute and validate query
             if (updateQuery.executeUpdate() == 0)

@@ -46,6 +46,8 @@ public class MainWindow extends JDialog
     private JComboBox geometryType;
     private JButton removeGeometryButton;
     private JButton areaButton;
+    private JButton layerPlusButton;
+    private JButton layerMinusButton;
     private JButton ellipseButton;
 
     private JPanel imageDisplayWrapper;
@@ -316,13 +318,29 @@ public class MainWindow extends JDialog
         geometryDisplay.addMouseListener(geometryMouseListener);
         geometryDisplay.addMouseMotionListener(geometryMouseListener);
 
+        layerPlusButton.addActionListener(e -> {
+            if (selectedGeometry == null)
+                return;
+
+            selectedGeometry.layer++;
+            selectedGeometry.Update();
+            GetGeometryTableModel().Sort();
+            repaint();
+        });
+        layerMinusButton.addActionListener(e -> {
+            if (selectedGeometry == null)
+                return;
+
+            selectedGeometry.layer--;
+            selectedGeometry.Update();
+            GetGeometryTableModel().Sort();
+            repaint();
+        });
+
         rectangleButton.addActionListener(e -> ActivateRectangleListener());
         // ellipseButton.addActionListener(e -> ActivateEllipseListener());
         circleButton.addActionListener(e -> ActivateCircleListener());
         areaButton.addActionListener(e -> ActivateAreaListener());
-
-        // TODO:
-        // - order geometrie?
     }
 
     public boolean HasActiveGeometryListener()
@@ -536,8 +554,9 @@ public class MainWindow extends JDialog
 
         // enable relevant objects
         removeGeometryButton.setEnabled(true);
+        layerPlusButton.setEnabled(true);
+        layerMinusButton.setEnabled(true);
 
-        geometryDisplay.repaint();
         geometryDisplayPane.repaint();
     }
 
@@ -548,8 +567,9 @@ public class MainWindow extends JDialog
 
         // disable relevant objects
         removeGeometryButton.setEnabled(false);
+        layerPlusButton.setEnabled(false);
+        layerMinusButton.setEnabled(false);
 
-        geometryDisplay.repaint();
         geometryDisplayPane.repaint();
     }
 
