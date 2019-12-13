@@ -291,12 +291,6 @@
                                       <text value="Circle"/>
                                     </properties>
                                   </component>
-                                  <component id="6dc6d" class="javax.swing.JButton" binding="ellipseButton" default-binding="true">
-                                    <constraints/>
-                                    <properties>
-                                      <text value="Ellipse"/>
-                                    </properties>
-                                  </component>
                                   <component id="d78b3" class="javax.swing.JButton" binding="areaButton" default-binding="true">
                                     <constraints/>
                                     <properties>

@@ -94,9 +94,8 @@ public class Convert
         // check a type of JGeometry object
         if (shape instanceof Rectangle2D)
         {
-            Rectangle rec = (Rectangle) shape;
-            Point pt = rec.getLocation();
-            return new JGeometry(pt.getX(), pt.getY(), pt.getX() + rec.getWidth(), pt.getY() + rec.getHeight(), 0);
+            Rectangle2D rec = (Rectangle2D) shape;
+            return new JGeometry(rec.getX(), rec.getY(), rec.getX() + rec.getWidth(), rec.getY() + rec.getHeight(), 0);
         }
         else if (shape instanceof Ellipse2D)
         {

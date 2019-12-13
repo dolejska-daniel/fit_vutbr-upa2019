@@ -6,7 +6,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 
 public class DefaultGeometryMouseListener extends MouseAdapter
 {
@@ -17,7 +19,6 @@ public class DefaultGeometryMouseListener extends MouseAdapter
 
     public DefaultGeometryMouseListener(MainWindow mainWindow)
     {
-
         this.mainWindow = mainWindow;
     }
 
@@ -32,8 +33,8 @@ public class DefaultGeometryMouseListener extends MouseAdapter
 
         final Shape shape = GetSelectedGeometry();
         sourceLocation = shape.getBounds().getLocation();
-        sourceDistX = sourceLocation.x - e.getX();
-        sourceDistY = sourceLocation.y - e.getY();
+        sourceDistX = e.getX();
+        sourceDistY = e.getY();
     }
 
     @Override
@@ -42,15 +43,35 @@ public class DefaultGeometryMouseListener extends MouseAdapter
         if (!HasSelectedGeometry())
             return;
 
+        int distDiffX = sourceDistX - e.getX();
+        int distDiffY = sourceDistY - e.getY();
+
         final Shape shape = GetSelectedGeometry();
-        if (shape instanceof GeneralPath)
+
+        if (shape instanceof Rectangle2D)
+        {
+            Rectangle2D rec = (Rectangle2D) shape;
+            final Rectangle2D.Double newRec = new Rectangle2D.Double(
+                    sourceLocation.x - distDiffX, sourceLocation.y - distDiffY,
+                    rec.getWidth(), rec.getHeight()
+            );
+            OverwriteSelectedGeometryShape(newRec);
+        }
+        else if (shape instanceof Ellipse2D)
+        {
+            Ellipse2D ellipse = (Ellipse2D) shape;
+            final Ellipse2D.Double newEllipse = new Ellipse2D.Double(
+                    sourceLocation.x - distDiffX, sourceLocation.y - distDiffY,
+                    ellipse.getWidth(), ellipse.getHeight()
+            );
+            OverwriteSelectedGeometryShape(newEllipse);
+        }
+        else if (shape instanceof GeneralPath)
         {
             GeneralPath path = (GeneralPath) shape;
-            int distX = sourceLocation.x - e.getX();
-            int distY = sourceLocation.y - e.getY();
 
             final AffineTransform transform = new AffineTransform();
-            transform.translate(sourceDistX - distX, sourceDistY - distY);
+            transform.translate(distDiffX, distDiffY);
 
             final Shape newShape = path.createTransformedShape(transform);
             OverwriteSelectedGeometryShape(newShape);
@@ -58,10 +79,21 @@ public class DefaultGeometryMouseListener extends MouseAdapter
     }
 
     @Override
+    public void mouseReleased(MouseEvent e)
+    {
+        if (!HasSelectedGeometry())
+            return;
+
+        SaveShapeChanges();
+    }
+
+    @Override
     public void mouseExited(MouseEvent e)
     {
         if (!HasSelectedGeometry())
             return;
+
+        SaveShapeChanges();
     }
 
     private boolean HasSelectedGeometry()
@@ -77,5 +109,12 @@ public class DefaultGeometryMouseListener extends MouseAdapter
     private void OverwriteSelectedGeometryShape(Shape shape)
     {
         mainWindow.GetSelectedGeometry().SetShape(shape);
+        mainWindow.ReloadSelectedGeometry();
+        mainWindow.repaint();
+    }
+
+    private void SaveShapeChanges()
+    {
+        mainWindow.GetSelectedGeometry().Update();
     }
 }

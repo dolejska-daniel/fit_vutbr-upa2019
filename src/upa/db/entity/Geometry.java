@@ -326,14 +326,14 @@ public class Geometry extends EntityBase
             throw new QueryException("Geometry instance is not set, cannot execute update without it.");
 
         // define SQL query
-        final String query = "UPDATE geometry SET entry_id=?, type=?, data=? WHERE id=?";
+        final String query = "UPDATE geometry SET entry_id=?, type=?, internal_type=?, data=? WHERE id=?";
         try (PreparedStatement updateQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
             updateQuery.setInt(1, this.entry_id);
             updateQuery.setString(2, this.type);
             updateQuery.setString(3, this.internal_type);
-            updateQuery.setObject(4, JGeometry.store(this.data));
+            updateQuery.setObject(4, JGeometry.store(GetConnection(), this.data));
             updateQuery.setInt(5, this.id);
 
             // execute and validate query

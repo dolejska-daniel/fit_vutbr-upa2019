@@ -70,7 +70,7 @@ public class MainWindow extends JDialog
         {
             add(rectangleButton);
             add(circleButton);
-            add(ellipseButton);
+            // add(ellipseButton);
             add(areaButton);
         }
     };
@@ -311,12 +311,13 @@ public class MainWindow extends JDialog
         geometryDisplayPane.getVerticalScrollBar().setUnitIncrement(16);
         geometryDisplayPane.setViewportView(geometryDisplay);
         geometryDisplay.addMouseListener(new SelectionGeometryMouseListener(this));
-        // final DefaultGeometryMouseListener geometryMouseListener = new DefaultGeometryMouseListener(this);
-        // geometryDisplay.addMouseListener(geometryMouseListener);
-        // geometryDisplay.addMouseMotionListener(geometryMouseListener);
+
+        final DefaultGeometryMouseListener geometryMouseListener = new DefaultGeometryMouseListener(this);
+        geometryDisplay.addMouseListener(geometryMouseListener);
+        geometryDisplay.addMouseMotionListener(geometryMouseListener);
 
         rectangleButton.addActionListener(e -> ActivateRectangleListener());
-        ellipseButton.addActionListener(e -> ActivateEllipseListener());
+        // ellipseButton.addActionListener(e -> ActivateEllipseListener());
         circleButton.addActionListener(e -> ActivateCircleListener());
         areaButton.addActionListener(e -> ActivateAreaListener());
 
@@ -559,6 +560,17 @@ public class MainWindow extends JDialog
             return null;
 
         return selectedGeometry;
+    }
+
+    public void ReloadSelectedGeometry()
+    {
+        if (selectedGeometryIndex == -1)
+        {
+            selectedGeometry = null;
+            return;
+        }
+
+        selectedGeometry = GetGeometryTableModel().Get(selectedGeometryIndex);
     }
 
     //-----------------------------------------------------dd--
