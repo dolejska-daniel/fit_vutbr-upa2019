@@ -92,16 +92,11 @@ public class Convert
     public static JGeometry ShapeToJGeometry(Shape shape) throws ConversionException
     {
         // check a type of JGeometry object
-        if (shape instanceof Rectangle)
+        if (shape instanceof Rectangle2D)
         {
             Rectangle rec = (Rectangle) shape;
             Point pt = rec.getLocation();
-            return JGeometry.createLinearPolygon(new double[]{
-                    pt.getX(), pt.getY(),
-                    pt.getX() + rec.getWidth(), pt.getY(),
-                    pt.getX() + rec.getWidth(), pt.getY() + rec.getHeight(),
-                    pt.getX(), pt.getY() + rec.getHeight(),
-            }, 2, 0);
+            return new JGeometry(pt.getX(), pt.getY(), pt.getX() + rec.getWidth(), pt.getY() + rec.getHeight(), 0);
         }
         else if (shape instanceof Ellipse2D)
         {
@@ -115,6 +110,20 @@ public class Convert
         }
 
         throw new ConversionException("Unable to convert provided Shape instance to JGeometry instance.");
+    }
+
+    public static String ShapeToInternalType(Shape shape) throws ConversionException
+    {
+        if (shape instanceof Rectangle2D)
+        {
+            return "Rectangle";
+        }
+        else if (shape instanceof Ellipse2D)
+        {
+            return "Ellipse";
+        }
+
+        throw new ConversionException("Unable to convert provided Shape instance to corresponding internal type.");
     }
 }
 

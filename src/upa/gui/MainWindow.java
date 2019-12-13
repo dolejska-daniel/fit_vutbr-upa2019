@@ -584,6 +584,7 @@ public class MainWindow extends JDialog
             Geometry g = new Geometry();
             g.entry_id = selectedEntry.id;
             g.type = String.valueOf(geometryType.getSelectedItem());
+            g.internal_type = Convert.ShapeToInternalType(activeGeometry);
             g.data = Convert.ShapeToJGeometry(activeGeometry);
             g.Create();
             System.out.println("Created new Geometry: EntryID=" + g.entry_id + ", ID=" + g.id);

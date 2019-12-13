@@ -38,6 +38,11 @@ public class Geometry extends EntityBase
     public String type;
 
     /**
+     * Geometry object type.
+     */
+    public String internal_type;
+
+    /**
      * Geometry data.
      */
     public JGeometry data;
@@ -104,7 +109,8 @@ public class Geometry extends EntityBase
         geometry.id = resultSet.getInt(1);
         geometry.entry_id = resultSet.getInt(2);
         geometry.type = resultSet.getString(3);
-        geometry.data = Convert.DbDataToJGeometry(resultSet.getBytes(4));
+        geometry.internal_type = resultSet.getString(4);
+        geometry.data = Convert.DbDataToJGeometry(resultSet.getBytes(5));
 
         return geometry;
     }
@@ -282,17 +288,18 @@ public class Geometry extends EntityBase
             throw new QueryException("Geometry instance is not set, cannot execute insertion without it.");
 
         // define SQL query
-        final String query = "INSERT INTO geometry (entry_id, type, data) " +
-                "VALUES (?, ?, ?) RETURNING id INTO ?";
+        final String query = "INSERT INTO geometry (entry_id, type, internal_type, data) " +
+                "VALUES (?, ?, ?, ?) RETURNING id INTO ?";
         try (PreparedStatement insertQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
             insertQuery.setInt(1, this.entry_id);
             insertQuery.setString(2, this.type);
-            insertQuery.setObject(3, JGeometry.store(GetConnection(), this.data));
+            insertQuery.setString(3, this.internal_type);
+            insertQuery.setObject(4, JGeometry.store(GetConnection(), this.data));
 
             // register return parameter
-            Query.RegisterReturnId(insertQuery, 4);
+            Query.RegisterReturnId(insertQuery, 5);
             // execute insertion
             insertQuery.executeUpdate();
             // TODO: Check whether insertion was successful?
@@ -325,8 +332,9 @@ public class Geometry extends EntityBase
             // set query parameters
             updateQuery.setInt(1, this.entry_id);
             updateQuery.setString(2, this.type);
-            updateQuery.setObject(3, JGeometry.store(this.data));
-            updateQuery.setInt(4, this.id);
+            updateQuery.setString(3, this.internal_type);
+            updateQuery.setObject(4, JGeometry.store(this.data));
+            updateQuery.setInt(5, this.id);
 
             // execute and validate query
             if (updateQuery.executeUpdate() == 0)

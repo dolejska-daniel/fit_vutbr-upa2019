@@ -49,9 +49,6 @@ public class DefaultGeometryMouseListener extends MouseAdapter
             int distX = sourceLocation.x - e.getX();
             int distY = sourceLocation.y - e.getY();
 
-            System.out.println(sourceDistX - distX);
-            System.out.println(sourceDistY - distY);
-
             final AffineTransform transform = new AffineTransform();
             transform.translate(sourceDistX - distX, sourceDistY - distY);
 
