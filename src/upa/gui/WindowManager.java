@@ -4,6 +4,8 @@ import upa.db.entity.Image;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Window manager - creates and takes care of existing windows.
@@ -79,13 +81,39 @@ public class WindowManager
         window.setVisible(true);
     }
 
-    public static void ShowMessageDialog(final String message, final String title)
+    public static void ShowInitializeDbDialog()
     {
-        WindowManager.ShowMessageDialog(message, title, mainWindow);
+        File initFile = new File(".initialized");
+        if (initFile.exists())
+            return;
+
+        InitializeDb dialog = new InitializeDb();
+        dialog.pack();
+        dialog.setLocationRelativeTo(mainWindow);
+        dialog.setVisible(true);
+
+        try
+        {
+            initFile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    public static void ShowMessageDialog(final String message, final String title, Component parent)
+    public static void ShowMessageDialog(final String message, final String title)
     {
-        JOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+        WindowManager.ShowMessageDialog(message, title, JOptionPane.INFORMATION_MESSAGE, mainWindow);
+    }
+
+    public static void ShowErrorMessageDialog(final String message, final String title)
+    {
+        WindowManager.ShowMessageDialog(message, title, JOptionPane.ERROR_MESSAGE, mainWindow);
+    }
+
+    public static void ShowMessageDialog(final String message, final String title, final int type, Component parent)
+    {
+        JOptionPane.showMessageDialog(parent, message, title, type);
     }
 }

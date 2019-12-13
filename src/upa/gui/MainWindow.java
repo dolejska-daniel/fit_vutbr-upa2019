@@ -97,6 +97,12 @@ public class MainWindow extends JDialog
         });
 
         //-----------------------------------------------------dd--
+        //  Initial database setup
+        //-----------------------------------------------------dd--
+
+        WindowManager.ShowInitializeDbDialog();
+
+        //-----------------------------------------------------dd--
         //  Entries table setup
         //-----------------------------------------------------dd--
 

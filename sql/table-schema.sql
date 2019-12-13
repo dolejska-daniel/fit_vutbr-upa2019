@@ -1,9 +1,9 @@
 --=========================================================================dd==
 --  TABLE DELETION
 --=========================================================================dd==
-DROP TABLE entries;
 DROP TABLE images;
 DROP TABLE geometry;
+DROP TABLE entries;
 
 --=========================================================================dd==
 --  TABLE CREATION
@@ -59,5 +59,3 @@ WHERE TABLE_NAME = 'GEOMETRY'
 INSERT INTO USER_SDO_GEOM_METADATA
 VALUES ('geometry', 'data', SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', 0, 4096, 0.1), SDO_DIM_ELEMENT('Y', 0, 4096, 0.1)),
         NULL);
-
-COMMIT;
