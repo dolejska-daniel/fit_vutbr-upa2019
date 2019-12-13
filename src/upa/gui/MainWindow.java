@@ -322,7 +322,6 @@ public class MainWindow extends JDialog
         areaButton.addActionListener(e -> ActivateAreaListener());
 
         // TODO:
-        // - přesouvání geometrie v GUI
         // - order geometrie?
     }
 
@@ -600,10 +599,6 @@ public class MainWindow extends JDialog
             g.data = Convert.ShapeToJGeometry(activeGeometry);
             g.Create();
             System.out.println("Created new Geometry: EntryID=" + g.entry_id + ", ID=" + g.id);
-
-            // TODO: Save geometry
-            // activeGeometry
-
 
             GetGeometryTableModel().Insert(g);
             RemoveActiveGeometry();

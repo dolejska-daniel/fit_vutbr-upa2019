@@ -5,9 +5,7 @@ import upa.gui.MainWindow;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 
 public class DefaultGeometryMouseListener extends MouseAdapter
@@ -16,6 +14,8 @@ public class DefaultGeometryMouseListener extends MouseAdapter
     private Point sourceLocation;
     private int sourceDistX;
     private int sourceDistY;
+    private int prevDistDiffX;
+    private int prevDistDiffY;
 
     public DefaultGeometryMouseListener(MainWindow mainWindow)
     {
@@ -35,6 +35,9 @@ public class DefaultGeometryMouseListener extends MouseAdapter
         sourceLocation = shape.getBounds().getLocation();
         sourceDistX = e.getX();
         sourceDistY = e.getY();
+
+        prevDistDiffX = 0;
+        prevDistDiffY = 0;
     }
 
     @Override
@@ -66,15 +69,24 @@ public class DefaultGeometryMouseListener extends MouseAdapter
             );
             OverwriteSelectedGeometryShape(newEllipse);
         }
-        else if (shape instanceof GeneralPath)
+        else if (shape instanceof Polygon)
         {
-            GeneralPath path = (GeneralPath) shape;
+            Polygon polygon = (Polygon) shape;
+            final Point currentLocation = shape.getBounds().getLocation();
 
-            final AffineTransform transform = new AffineTransform();
-            transform.translate(distDiffX, distDiffY);
+            final int[] xpoints = polygon.xpoints;
+            for (int i = 0; i < xpoints.length; i++)
+                xpoints[i] = xpoints[i] + (prevDistDiffX - distDiffX);
 
-            final Shape newShape = path.createTransformedShape(transform);
-            OverwriteSelectedGeometryShape(newShape);
+            final int[] ypoints = polygon.ypoints;
+            for (int i = 0; i < ypoints.length; i++)
+                ypoints[i] = ypoints[i] + (prevDistDiffY - distDiffY);
+
+            final Polygon newPolygon = new Polygon(xpoints, ypoints, polygon.npoints);
+            OverwriteSelectedGeometryShape(newPolygon);
+
+            prevDistDiffX = distDiffX;
+            prevDistDiffY = distDiffY;
         }
     }
 

@@ -11,7 +11,7 @@ public class GeometryAreaMouseListener extends MouseAdapter
     private MainWindow mainWindow;
 
     private Point sourcePoint;
-    private Rectangle rectangle;
+    private Polygon polygon;
 
     public GeometryAreaMouseListener(MainWindow mainWindow)
     {
@@ -22,56 +22,49 @@ public class GeometryAreaMouseListener extends MouseAdapter
     private void CreateNewShape(Point point)
     {
         sourcePoint = point;
-        rectangle = new Rectangle(point);
-        mainWindow.SetActiveGeometry(rectangle);
+        polygon = new Polygon();
+        polygon.addPoint(point.x, point.y);
+        mainWindow.SetActiveGeometry(polygon);
     }
 
     private void DestroyActiveShape()
     {
         mainWindow.RemoveActiveGeometry();
-        rectangle = null;
+        polygon = null;
         sourcePoint = null;
     }
 
     private void SaveActiveShape()
     {
         mainWindow.SaveActiveGeometry();
-        rectangle = null;
+        polygon = null;
         sourcePoint = null;
     }
 
     @Override
-    public void mousePressed(MouseEvent e)
+    public void mouseClicked(MouseEvent e)
     {
-        CreateNewShape(e.getPoint());
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e)
-    {
-        if (rectangle == null || sourcePoint == null)
+        if (polygon == null || sourcePoint == null)
+        {
+            CreateNewShape(e.getPoint());
             return;
+        }
 
-        int distanceX = e.getX() - (int) sourcePoint.getX();
-        int distanceY = e.getY() - (int) sourcePoint.getY();
-        rectangle.setSize(Math.abs(distanceX), Math.abs(distanceY));
+        if ((e.getModifiers() & (1 << 2)) != 0)
+        {
+            // right click
+            DestroyActiveShape();
+            return;
+        }
 
-        distanceX *= -(-1 + (int) Math.signum(distanceX)) >> 1;
-        distanceY *= -(-1 + (int) Math.signum(distanceY)) >> 1;
-        rectangle.setLocation(sourcePoint.x + distanceX, sourcePoint.y + distanceY);
-
+        polygon.addPoint(e.getX(), e.getY());
         mainWindow.repaint();
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e)
-    {
-        SaveActiveShape();
+        // SaveActiveShape();
     }
 
     @Override
     public void mouseExited(MouseEvent e)
     {
-        DestroyActiveShape();
+        SaveActiveShape();
     }
 }

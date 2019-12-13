@@ -4,10 +4,7 @@ import oracle.spatial.geometry.JGeometry;
 import upa.utils.exception.ConversionException;
 
 import java.awt.*;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 
 /**
  * Class providing useful methods for data conversions.
@@ -45,7 +42,14 @@ public class Convert
             case JGeometry.GTYPE_COLLECTION:
             case JGeometry.GTYPE_MULTICURVE:
             case JGeometry.GTYPE_MULTIPOLYGON:
-                return geometry.createShape();
+                Shape shape = geometry.createShape();
+
+                if (shape instanceof GeneralPath)
+                {
+                    shape = Convert.GeneralPathToPolygon((GeneralPath) shape);
+                }
+
+                return shape;
 
             // return a rectangular "point" for a point (centered over the point location with unit dimensions)
             case JGeometry.GTYPE_POINT:
@@ -107,8 +111,24 @@ public class Convert
             final double r = pt1.distance(ellipse.getCenterX(), ellipse.getCenterY());
             return JGeometry.createCircle(ellipse.getCenterX(), ellipse.getCenterY(), r, 2);
         }
+        else if (shape instanceof Polygon)
+        {
+            Polygon polygon = (Polygon) shape;
+            final double[] doubles = new double[polygon.npoints * 2];
+            for (int i = 0; i < polygon.npoints; i++)
+            {
+                doubles[i * 2] = polygon.xpoints[i];
+                doubles[i * 2 + 1] = polygon.ypoints[i];
+            }
+            return JGeometry.createLinearPolygon(doubles, 2, 0);
+        }
+        else if (shape instanceof GeneralPath)
+        {
+            GeneralPath path = (GeneralPath) shape;
 
-        throw new ConversionException("Unable to convert provided Shape instance to JGeometry instance.");
+        }
+
+        throw new ConversionException(String.format("Unable to convert provided Shape instance (%s) to JGeometry instance.", shape.getClass()));
     }
 
     public static String ShapeToInternalType(Shape shape) throws ConversionException
@@ -121,8 +141,38 @@ public class Convert
         {
             return "Ellipse";
         }
+        else if (shape instanceof Polygon)
+        {
+            return "Polygon";
+        }
 
-        throw new ConversionException("Unable to convert provided Shape instance to corresponding internal type.");
+        throw new ConversionException(String.format("Unable to convert provided Shape instance (%s) to corresponding internal type.", shape.getClass()));
+    }
+
+    public static Polygon GeneralPathToPolygon(GeneralPath path) throws ConversionException
+    {
+        final Polygon polygon = new Polygon();
+
+        float[] coords = new float[6];
+        PathIterator pathIterator = path.getPathIterator(new AffineTransform());
+        while (!pathIterator.isDone())
+        {
+            switch (pathIterator.currentSegment(coords))
+            {
+                case PathIterator.SEG_MOVETO:
+                case PathIterator.SEG_LINETO:
+                    polygon.addPoint((int) coords[0], (int) coords[1]);
+                    break;
+
+                case PathIterator.SEG_CLOSE:
+                    break;
+                default:
+                    throw new ConversionException("Unable to convert provided GeneralPath instance to corresponding Polygon instance. The path is too difficult.");
+            }
+            pathIterator.next();
+        }
+
+        return polygon;
     }
 }
 
