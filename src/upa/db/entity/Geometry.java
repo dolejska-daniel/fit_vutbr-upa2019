@@ -247,8 +247,8 @@ public class Geometry extends EntityBase
     public static double GetArea(final int entry_id, final String type)
     {
         // define SQL query
-        final String query = "SELECT SUM(SDO_GEOM.SDO_AREA(g.data, 1)) " +
-                "FROM geometry g WHERE g.entry_id=? AND g.type LIKE ?";
+        final String query = "SELECT SDO_GEOM.SDO_AREA(total_floor, 0.1) " +
+                "FROM (SELECT SDO_AGGR_UNION(SDOAGGRTYPE(g.data, 0.1)) total_floor FROM geometry g WHERE g.entry_id=? AND g.type LIKE ?)";
         try (PreparedStatement insertQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
@@ -263,15 +263,16 @@ public class Geometry extends EntityBase
         }
         catch (Exception e)
         {
-            throw new QueryException("Failed to process Geometry 'INSERT' query.", e);
+            throw new QueryException("Failed to process Geometry 'GET AREA' query.", e);
         }
     }
 
     public static double GetClearArea(final int entry_id, final String type)
     {
         // define SQL query
-        final String query = "SELECT SUM(DISTINCT SDO_GEOM.SDO_AREA(g1.DATA)) - SUM(SDO_GEOM.SDO_AREA(SDO_GEOM.SDO_INTERSECTION(g1.data, g2.data))) " +
-                "FROM geometry g1, geometry g2 WHERE g1.entry_id=? AND g1.type LIKE ? AND g2.entry_id=? AND g2.type NOT LIKE ?";
+        final String query = "SELECT SDO_GEOM.SDO_AREA(total_floor, 0.1) total_floor_area, SDO_GEOM.SDO_AREA(SDO_GEOM.SDO_INTERSECTION(total_floor, total_other, 0.1)) total_intersecting_area " +
+                "FROM (SELECT SDO_AGGR_UNION(SDOAGGRTYPE(g.data, 0.1)) total_floor FROM geometry g WHERE g.entry_id=? AND g.type LIKE ?)," +
+                "(SELECT SDO_AGGR_UNION(SDOAGGRTYPE(g.data, 0.1)) total_other FROM geometry g WHERE g.entry_id=? AND g.type NOT LIKE ?)";
         try (PreparedStatement insertQuery = GetConnection().prepareStatement(query))
         {
             // set query parameters
@@ -284,11 +285,11 @@ public class Geometry extends EntityBase
             ResultSet result = insertQuery.executeQuery();
 
             result.next();
-            return result.getDouble(1);
+            return result.getDouble(1) - result.getDouble(2);
         }
         catch (Exception e)
         {
-            throw new QueryException("Failed to process Geometry 'INSERT' query.", e);
+            throw new QueryException("Failed to process Geometry 'GET CLEAR AREA' query.", e);
         }
     }
 

@@ -1,5 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: upa.Application
-Class-Path: ordim.jar runtime12.jar ons.jar ucp.jar xdb6.jar ojdbc6.jar 
- ojdbc7.jar orai18n.jar simplefan.jar sdoapi.jar sdoutl.jar sdotype.jar
+Class-Path: ojdbc7.jar ordim.jar runtime12.jar sdoapi.jar sdotype.jar sdoutl.jar
 
